@@ -27,6 +27,12 @@ dependencies {
 	implementation 'org.postgresql:postgresql'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	//spring tag validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	//swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
