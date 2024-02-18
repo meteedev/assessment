@@ -8,11 +8,9 @@ import lombok.Data;
 public class Lottery {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer no;
-
     @Column(name="ticket")
     private String ticket;
+
     @Column(name="amount")
     private Integer amount;
 

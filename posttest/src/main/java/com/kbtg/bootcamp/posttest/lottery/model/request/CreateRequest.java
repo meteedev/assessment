@@ -7,11 +7,11 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class LotteryRequest {
+public class CreateRequest {
 
     @NotNull
-    @Size(min = 5, max = 100, message = "Name must be between 5 and 100 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Invalid characters in name")
+    @Size(min = 6, max = 6, message = "Lottery Length must be 6 characters")
+    @Pattern(regexp = "\\d+", message = "Should contain only digits")
     private String ticket;
 
     @NotNull
@@ -20,7 +20,7 @@ public class LotteryRequest {
 
     @NotNull
     @Positive
-    private Double amount;
+    private Integer amount;
 
 
 }

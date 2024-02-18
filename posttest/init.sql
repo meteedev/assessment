@@ -1,23 +1,16 @@
--- Drop tables if they exist
-DROP TABLE IF EXISTS lottery CASCADE;
-DROP TABLE IF EXISTS user_ticket CASCADE;
-
+DROP TABLE IF EXISTS lottery;
 CREATE TABLE lottery (
-    id SERIAL PRIMARY KEY,
-    ticket VARCHAR(255) UNIQUE NOT NULL,
-    price VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(255) NOT NULL
+    "ticket" varchar(6) PRIMARY KEY UNIQUE NOT NULL,
+    "amount" float4 NOT NULL,
+    "price" float8 NOT NULL
 );
 
 
-CREATE TABLE wallet (
-    id SERIAL PRIMARY KEY,
-    wallet_name VARCHAR(255) UNIQUE NOT NULL,
-    active BOOLEAN NOT NULL,
-    profile_email VARCHAR(255) REFERENCES profile(email) ON DELETE CASCADE
+DROP TABLE IF EXISTS user_ticket;
+CREATE TABLE user_ticket (
+    "no" SERIAL PRIMARY KEY,
+    "user_id" varchar NOT NULL,
+    "ticket" varchar(6) NOT NULL,
+    "price" float8 NOT NULL,
+    "amount" float8 NOT NULL
 );
-
--- Initial data
-INSERT INTO profile(email, name) VALUES('sample@email.com', 'John Doe');
-INSERT INTO wallet(wallet_name, active, profile_email) VALUES('JohnWallet1', true, 'sample@email.com');
-INSERT INTO wallet(wallet_name, active, profile_email) VALUES('JohnWallet2', false, 'sample@email.com');
