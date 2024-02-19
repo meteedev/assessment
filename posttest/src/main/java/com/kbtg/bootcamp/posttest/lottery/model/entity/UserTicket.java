@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
-@Entity(name = "user_ticket")
+@Entity
+@Table(name="user_ticket")
 public class UserTicket {
 
     @Id
@@ -23,6 +24,9 @@ public class UserTicket {
 
     @Column(name = "price")
     private Double price;
+
+    @Column(name = "total_bill")
+    private Double totalBill;
 
 
 }

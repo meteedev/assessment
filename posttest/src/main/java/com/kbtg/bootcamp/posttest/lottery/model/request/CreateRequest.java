@@ -1,5 +1,6 @@
 package com.kbtg.bootcamp.posttest.lottery.model.request;
 
+import com.kbtg.bootcamp.posttest.lottery.constant.LotteryModuleConstant;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
@@ -10,8 +11,12 @@ import lombok.Data;
 public class CreateRequest {
 
     @NotNull
-    @Size(min = 6, max = 6, message = "Lottery Length must be 6 characters")
-    @Pattern(regexp = "\\d+", message = "Should contain only digits")
+    @Size(
+            min = LotteryModuleConstant.TICKET_LENGTH,
+            max = LotteryModuleConstant.TICKET_LENGTH,
+            message = LotteryModuleConstant.MSG_INVALID_TICKET_ID
+    )
+    @Pattern(regexp = "\\d+", message = LotteryModuleConstant.MSG_DIGIT_ONLY)
     private String ticket;
 
     @NotNull

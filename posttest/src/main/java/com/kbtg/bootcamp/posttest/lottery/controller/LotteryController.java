@@ -5,11 +5,10 @@ import com.kbtg.bootcamp.posttest.lottery.model.dto.LotteryDto;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketDto;
 import com.kbtg.bootcamp.posttest.lottery.model.request.CreateRequest;
 import com.kbtg.bootcamp.posttest.lottery.model.request.PurchaseRequest;
-import com.kbtg.bootcamp.posttest.lottery.model.response.CreateLotteryResponse;
-import com.kbtg.bootcamp.posttest.lottery.model.response.GetLotteryResponse;
-import com.kbtg.bootcamp.posttest.lottery.model.response.PurchaseLotteryResponse;
-import com.kbtg.bootcamp.posttest.lottery.model.response.ViewLotteryPurchase;
+import com.kbtg.bootcamp.posttest.lottery.model.response.*;
 import com.kbtg.bootcamp.posttest.lottery.service.LotteryService;
+import com.kbtg.bootcamp.posttest.lottery.util.TicketValidator;
+import com.kbtg.bootcamp.posttest.lottery.util.UserValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +49,8 @@ public class LotteryController {
             @PathVariable(name = "ticketId") String ticketId,
             @RequestBody @Valid PurchaseRequest purchaseRequest
     ) {
+        UserValidator.validateUserIdFormat(userId);
+        TicketValidator.validateTicketIdFormat(ticketId);
         UserTicketDto userTicketDto = this.modelCreator.createUserTicketDto(userId,ticketId, purchaseRequest);
         return this.lotteryService.purchaseLottery(userTicketDto);
     }
@@ -59,24 +60,24 @@ public class LotteryController {
     public ViewLotteryPurchase viewLotteryPurchaseByUser(
             @PathVariable(name = "userId") String userId
     ) {
-        this.lotteryService.getLotteryByUserId(userId);
-        return null;
+        UserValidator.validateUserIdFormat(userId);
+        return this.lotteryService.getLotteryByUserId(userId);
+    }
+
+    @Operation(summary = "refund lottery")
+    @RequestMapping(value = "/users/{userId}/lotteries/{ticketId}", method = RequestMethod.DELETE)
+    public SellBackLotteryResponse sellBackLottery(
+            @PathVariable(name = "userId") String userId,
+            @PathVariable(name = "ticketId") String ticketId
+    ) {
+        UserValidator.validateUserIdFormat(userId);
+        TicketValidator.validateTicketIdFormat(ticketId);
+        UserTicketDto userTicketDto = this.modelCreator.createUserTicketDto(userId,ticketId);
+        return this.lotteryService.sellBackLottery(userTicketDto);
     }
 
 
 
-//    @Operation(summary = "cancel lottery")
-//    @RequestMapping(value = "/users/{userId}/lotteries/{ticketId}", method = RequestMethod.DELETE)
-//    public LotteryResponse cancelLotteryPerchase(
-//            @PathVariable(name = "userId") Integer userId,
-//            @PathVariable(name = "ticketId") Integer ticketId,
-//            @RequestBody @Valid CreateRequest createRequest
-//    ) {
-//        LotteryDto accountDto = modelConverter.convertLotteryRequestToDto(createRequest);
-//        LotteryResponse lotteryResponse =  null;
-//        //System.out.println(accountResponse.toString());
-//        return lotteryResponse;
-//    }
 
 
 
