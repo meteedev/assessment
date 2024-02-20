@@ -10,10 +10,12 @@ import lombok.Data;
 @Data
 public class CreateRequest {
 
+    static final int TICKET_LENGTH  = 6;
+
     @NotNull
     @Size(
-            min = LotteryModuleConstant.TICKET_LENGTH,
-            max = LotteryModuleConstant.TICKET_LENGTH,
+            min = CreateRequest.TICKET_LENGTH,
+            max =  CreateRequest.TICKET_LENGTH,
             message = LotteryModuleConstant.MSG_INVALID_TICKET_FORMAT
     )
     @Pattern(regexp = "\\d+", message = LotteryModuleConstant.MSG_DIGIT_ONLY)

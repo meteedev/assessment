@@ -4,9 +4,7 @@ import lombok.Data;
 
 @Data
 public class UserTicketDto {
-
     private String userId;
     private String ticket;
     private Integer amount;
-
 }
