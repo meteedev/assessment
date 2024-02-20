@@ -4,7 +4,7 @@ import java.util.List;
 
 public record ViewLotteryPurchase (
         List<String> tickets,
-        Long count,
+        Integer count,
         Double cost
 ){
 }

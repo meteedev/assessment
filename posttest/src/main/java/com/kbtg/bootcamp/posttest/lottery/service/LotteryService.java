@@ -1,8 +1,10 @@
 package com.kbtg.bootcamp.posttest.lottery.service;
 
 
+import com.kbtg.bootcamp.posttest.exceptions.AppValidateException;
 import com.kbtg.bootcamp.posttest.exceptions.InternalServerException;
 import com.kbtg.bootcamp.posttest.exceptions.NotFoundException;
+import com.kbtg.bootcamp.posttest.lottery.constant.LotteryModuleConstant;
 import com.kbtg.bootcamp.posttest.lottery.model.creator.ModelCreator;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.LotteryDto;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketDto;
@@ -33,13 +35,13 @@ public class LotteryService {
     }
 
     @Transactional
-    public CreateLotteryResponse createlLottery(LotteryDto lotteryDto){
+    public CreateLotteryResponse createLottery(LotteryDto lotteryDto){
         Lottery lottery = this.modelCreator.createLotteryEntity(lotteryDto);
 
         Optional<Lottery>  optionalLotteryDuplicate = this.lotteryRepository.findById(lotteryDto.getTicket());
 
         if(optionalLotteryDuplicate.isPresent()){
-            throw new InternalServerException("Failed to create Lottery duplicated ticket");
+            throw new InternalServerException(LotteryModuleConstant.MSG_CREATE_TICKET_DUPILCATE);
         }
 
         try {
@@ -47,7 +49,7 @@ public class LotteryService {
         }catch (RuntimeException e){
             throw new InternalServerException(e.getMessage());
         }catch(Exception e){
-            throw new InternalServerException("Failed to create Lottery");
+            throw new InternalServerException(LotteryModuleConstant.MSG_CREATE_TICKET_FAIL);
         }
 
         return this.modelCreator.createCreateLotteryResponse(lottery);
@@ -58,7 +60,7 @@ public class LotteryService {
         List<String> tickets = this.lotteryRepository.getAllTicket();
 
         if(tickets.isEmpty()){
-            throw new NotFoundException("Not found lottery");
+            throw new NotFoundException("Not found lotteries");
         }
 
         return this.modelCreator.createGetLotteryResponse(tickets);
@@ -68,67 +70,86 @@ public class LotteryService {
         List<UserTicketSummary> userTicketSummaries = this.userTicketRepository.findSumPriceAmountByUserId(userId);
 
         if(userTicketSummaries.isEmpty()){
-            throw new NotFoundException("Not found lottery purchase transaction");
+            throw new NotFoundException(LotteryModuleConstant.MSG_USER_TICKET_NOT_FOUND);
         }
 
         return this.modelCreator.createViewLotteryPurchase(userTicketSummaries);
     }
 
 
+    @Transactional
     public PurchaseLotteryResponse purchaseLottery(UserTicketDto userTicketDto){
         Optional<Lottery> optionalLottery = this.lotteryRepository.findById(userTicketDto.getTicket());
 
-        if(!optionalLottery.isPresent()) {
+        if(optionalLottery.isEmpty()) {
             throw new NotFoundException("Ticket not found");
         }
 
         Lottery lottery = optionalLottery.get();
-        UserTicket userTicket = this.modelCreator.createUserTicketEntity(userTicketDto);
+        Integer purchaseAmount = this.getDefaultPurchaseAmount(userTicketDto.getAmount());
 
-        if(0==userTicket.getAmount()){
-            userTicket.setAmount(1);
+        if(lottery.getAmount()<purchaseAmount){
+            throw new AppValidateException(LotteryModuleConstant.MSG_PURCHASE_TICKET_AMOUNT_NOT_ENOUGH);
         }
 
-        userTicket.setPrice(lottery.getPrice());
-        userTicket.setTotalBill(this.calulateLotteryPrice(lottery.getPrice(),userTicket.getAmount()));
+        Integer newLotteryMasterAmount = lottery.getAmount()-purchaseAmount;
+        lottery.setAmount(newLotteryMasterAmount);
 
-        UserTicket userTicketDb = null;
+        UserTicket userTicket = this.modelCreator.createUserTicketEntity(userTicketDto);
+        userTicket.setAmount(purchaseAmount);
+        userTicket.setPrice(lottery.getPrice());
+        userTicket.setTotalBill(this.calculateLotteryPrice(lottery.getPrice(),userTicket.getAmount()));
+
+        UserTicket userTicketDb;
         try{
             userTicketDb = this.userTicketRepository.save(userTicket);
+            this.lotteryRepository.save(lottery);
         }catch(Exception e){
-            throw new InternalServerException("Failed to purchase Lottery");
+            throw new InternalServerException(LotteryModuleConstant.MSG_PURCHASE_FAIL);
         }
         return this.modelCreator.createPurchaseLotteryResponse(userTicketDb);
     }
 
 
-
     @Transactional
     public SellBackLotteryResponse sellBackLottery(UserTicketDto userTicketDto){
+
         Optional<UserTicketSummary> optionalUserTicketSummary = this.userTicketRepository.findSumPriceAmountByUserIdTicketId(userTicketDto.getUserId(),userTicketDto.getTicket());
-
-        System.out.println(optionalUserTicketSummary.isPresent());
-
-        if(!optionalUserTicketSummary.isPresent()){
-            throw new NotFoundException("Not found lottery purchase transaction");
+        if(optionalUserTicketSummary.isEmpty()){
+            throw new NotFoundException(LotteryModuleConstant.MSG_USER_TICKET_NOT_FOUND);
         }
 
+        Optional<Lottery> optionalLottery = this.lotteryRepository.findById(userTicketDto.getTicket());
+        if(optionalLottery.isEmpty()){
+            throw new NotFoundException(LotteryModuleConstant.MSG_TICKET_NOT_FOUND);
+        }
         UserTicketSummary  userTicketSummary = optionalUserTicketSummary.get();
+
+        Lottery lottery = optionalLottery.get();
+        Integer newLotteryAmount = lottery.getAmount()+userTicketSummary.getTotalTicketAmount();
+        lottery.setAmount(newLotteryAmount);
 
         try{
             this.userTicketRepository.deleteUserTicketByUserIdTicket(userTicketDto.getUserId(),userTicketDto.getTicket());
+            this.lotteryRepository.save(lottery);
         }catch (Exception e){
-            e.printStackTrace();
-            throw new InternalServerException("Failed to sell back Lottery");
+            throw new InternalServerException(LotteryModuleConstant.MSG_SELL_BACK_FAIL);
         }
 
         return this.modelCreator.createGellBackLotteryResponse(userTicketSummary.getTicket());
     }
 
-    private Double calulateLotteryPrice(Double price,int amount){
+    private Double calculateLotteryPrice(Double price,int amount){
         return price*amount;
     }
 
+    private Integer getDefaultPurchaseAmount(Integer amount){
+        if(amount < LotteryModuleConstant.DEFAULT_PURCHASE_TICKET_AMOUNT){
+            return LotteryModuleConstant.DEFAULT_PURCHASE_TICKET_AMOUNT;
+        }else{
+            return amount;
+        }
+    }
 
 
 }

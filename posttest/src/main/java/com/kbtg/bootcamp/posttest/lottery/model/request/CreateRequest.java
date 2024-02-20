@@ -14,7 +14,7 @@ public class CreateRequest {
     @Size(
             min = LotteryModuleConstant.TICKET_LENGTH,
             max = LotteryModuleConstant.TICKET_LENGTH,
-            message = LotteryModuleConstant.MSG_INVALID_TICKET_ID
+            message = LotteryModuleConstant.MSG_INVALID_TICKET_FORMAT
     )
     @Pattern(regexp = "\\d+", message = LotteryModuleConstant.MSG_DIGIT_ONLY)
     private String ticket;

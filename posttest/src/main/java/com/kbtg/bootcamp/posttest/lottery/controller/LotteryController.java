@@ -31,7 +31,7 @@ public class LotteryController {
             @RequestBody @Valid CreateRequest createRequest
     ) {
         LotteryDto lotteryDto =  this.modelCreator.createLotteryDto(createRequest);
-        return lotteryService.createlLottery(lotteryDto);
+        return this.lotteryService.createLottery(lotteryDto);
     }
 
 

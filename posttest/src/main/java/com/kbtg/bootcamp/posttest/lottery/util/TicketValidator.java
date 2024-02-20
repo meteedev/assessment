@@ -7,16 +7,14 @@ import java.util.Objects;
 
 public class TicketValidator {
 
-    public static String  MSG_INVALID_TICKET_ID = "Ticket ID invalid";
-
     public static void validateTicketIdFormat(String ticketId){
         try {
-            Objects.requireNonNull(ticketId, LotteryModuleConstant.MSG_INVALID_TICKET_ID);
+            Objects.requireNonNull(ticketId, LotteryModuleConstant.MSG_INVALID_TICKET_FORMAT);
             if(ticketId.trim().length() != LotteryModuleConstant.TICKET_LENGTH){
-                throw new AppValidateException(LotteryModuleConstant.MSG_INVALID_TICKET_ID);
+                throw new AppValidateException(LotteryModuleConstant.MSG_INVALID_TICKET_FORMAT);
             }
         } catch (NullPointerException e) {
-            throw new AppValidateException(LotteryModuleConstant.MSG_INVALID_TICKET_ID);
+            throw new AppValidateException(LotteryModuleConstant.MSG_INVALID_TICKET_FORMAT);
         }
     }
 

@@ -72,10 +72,7 @@ public class ModelCreator {
     }
 
     public GetLotteryResponse createGetLotteryResponse(List<String> tickets) {
-        GetLotteryResponse getLotteryResponse = new GetLotteryResponse(
-                tickets
-        );
-        return getLotteryResponse;
+        return new GetLotteryResponse(tickets);
     }
 
 
@@ -83,7 +80,7 @@ public class ModelCreator {
 
         List<String> tickets = new ArrayList<>();
         double totalBill = 0.0;
-        long totalAmount = 0;
+        int totalAmount = 0;
 
         for(UserTicketSummary userTicketSummary:userTicketSummaryList){
             tickets.add(userTicketSummary.getTicket());
