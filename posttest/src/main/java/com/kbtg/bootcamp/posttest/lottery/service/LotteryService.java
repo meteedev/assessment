@@ -1,9 +1,8 @@
 package com.kbtg.bootcamp.posttest.lottery.service;
 
-
-import com.kbtg.bootcamp.posttest.exceptions.AppValidateException;
 import com.kbtg.bootcamp.posttest.exceptions.InternalServerException;
 import com.kbtg.bootcamp.posttest.exceptions.NotFoundException;
+import com.kbtg.bootcamp.posttest.exceptions.UnProcessException;
 import com.kbtg.bootcamp.posttest.lottery.constant.LotteryModuleConstant;
 import com.kbtg.bootcamp.posttest.lottery.model.creator.ModelCreator;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.LotteryDto;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -86,10 +86,13 @@ public class LotteryService {
         }
 
         Lottery lottery = optionalLottery.get();
+
+
+
         Integer purchaseAmount = this.getDefaultPurchaseAmount(userTicketDto.getAmount());
 
         if(lottery.getAmount()<purchaseAmount){
-            throw new AppValidateException(LotteryModuleConstant.MSG_PURCHASE_TICKET_AMOUNT_NOT_ENOUGH);
+            throw new UnProcessException(LotteryModuleConstant.MSG_PURCHASE_TICKET_AMOUNT_NOT_ENOUGH);
         }
 
         Integer newLotteryMasterAmount = lottery.getAmount()-purchaseAmount;
@@ -144,11 +147,7 @@ public class LotteryService {
     }
 
     private Integer getDefaultPurchaseAmount(Integer amount){
-        if(amount < LotteryModuleConstant.DEFAULT_PURCHASE_TICKET_AMOUNT){
-            return LotteryModuleConstant.DEFAULT_PURCHASE_TICKET_AMOUNT;
-        }else{
-            return amount;
-        }
+        return Objects.requireNonNullElse(amount, LotteryModuleConstant.DEFAULT_PURCHASE_TICKET_AMOUNT);
     }
 
 

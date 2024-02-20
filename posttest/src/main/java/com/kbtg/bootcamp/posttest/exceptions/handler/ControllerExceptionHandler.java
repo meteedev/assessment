@@ -1,5 +1,6 @@
 package com.kbtg.bootcamp.posttest.exceptions.handler;
 
+import com.kbtg.bootcamp.posttest.exceptions.UnProcessException;
 import com.kbtg.bootcamp.posttest.exceptions.response.ApiErrorResponse;
 import com.kbtg.bootcamp.posttest.exceptions.AppValidateException;
 import com.kbtg.bootcamp.posttest.exceptions.InternalServerException;
@@ -72,6 +73,17 @@ public class ControllerExceptionHandler {
     }
 
 
+    @ExceptionHandler(value = {UnProcessException.class})
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ApiErrorResponse handleValidateException(UnProcessException unProcessException, WebRequest request) {
+        return new ApiErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
+                unProcessException.getMessage(),
+                request.getDescription(false)
+        );
+    }
 
 //    @ExceptionHandler(value = {Exception.class})
 //    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
