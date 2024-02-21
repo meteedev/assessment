@@ -7,7 +7,7 @@ import lombok.Data;
 public class UserTicketSummary {
     private String ticket;
     private String userId;
-    private Integer totalTicketAmount;
+    private Long totalTicketAmount;
     private Double totalTicketBillPrice;
 }
 
