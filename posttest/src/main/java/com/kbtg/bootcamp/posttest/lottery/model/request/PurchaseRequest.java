@@ -6,6 +6,6 @@ import lombok.Data;
 
 @Data
 public class PurchaseRequest {
-    @PositiveOrZero(message = LotteryModuleConstant.MSG_AMOUNT_NOT_LESS_THAN_ZERO)
-    private Integer amount;
+//    @PositiveOrZero(message = LotteryModuleConstant.MSG_AMOUNT_NOT_LESS_THAN_ZERO)
+//    private Integer amount;
 }
