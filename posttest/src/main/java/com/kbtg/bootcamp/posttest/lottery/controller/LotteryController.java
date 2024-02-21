@@ -4,8 +4,6 @@ import com.kbtg.bootcamp.posttest.lottery.model.creator.ModelCreator;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.LotteryDto;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketDto;
 import com.kbtg.bootcamp.posttest.lottery.model.request.CreateRequest;
-import com.kbtg.bootcamp.posttest.lottery.model.request.PurchaseRequest;
-import com.kbtg.bootcamp.posttest.lottery.model.response.*;
 import com.kbtg.bootcamp.posttest.lottery.service.LotteryService;
 import com.kbtg.bootcamp.posttest.lottery.util.TicketValidator;
 import com.kbtg.bootcamp.posttest.lottery.util.UserValidator;
@@ -89,7 +87,6 @@ public class LotteryController {
                 .body(this.lotteryService.sellBackLottery(userTicketDto));
 
     }
-
 
 
 
