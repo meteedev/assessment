@@ -1,84 +1,155 @@
-package com.kbtg.bootcamp.posttest.lottery.controller;
+package com.kbtg.bootcamp.posttest.lottery.service;
 
+import com.kbtg.bootcamp.posttest.exceptions.InternalServerException;
+import com.kbtg.bootcamp.posttest.exceptions.NotFoundException;
+import com.kbtg.bootcamp.posttest.exceptions.UnProcessException;
+import com.kbtg.bootcamp.posttest.lottery.constant.LotteryModuleConstant;
 import com.kbtg.bootcamp.posttest.lottery.model.creator.ModelCreator;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.LotteryDto;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketDto;
-import com.kbtg.bootcamp.posttest.lottery.model.request.CreateRequest;
-import com.kbtg.bootcamp.posttest.lottery.model.request.PurchaseRequest;
+import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketSummary;
+import com.kbtg.bootcamp.posttest.lottery.model.entity.Lottery;
+import com.kbtg.bootcamp.posttest.lottery.model.entity.UserTicket;
 import com.kbtg.bootcamp.posttest.lottery.model.response.*;
-import com.kbtg.bootcamp.posttest.lottery.service.LotteryService;
-import com.kbtg.bootcamp.posttest.lottery.util.TicketValidator;
-import com.kbtg.bootcamp.posttest.lottery.util.UserValidator;
-import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.*;
+import com.kbtg.bootcamp.posttest.lottery.repository.LotteryRepository;
+import com.kbtg.bootcamp.posttest.lottery.repository.UserTicketRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@RestController
-public class LotteryController {
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
-    private final LotteryService lotteryService;
+@Service
+public class LotteryService {
+
+    private final LotteryRepository lotteryRepository;
+    private final UserTicketRepository userTicketRepository;
     private final ModelCreator modelCreator;
 
-    public LotteryController(LotteryService lotteryService, ModelCreator modelCreator) {
-        this.lotteryService = lotteryService;
+
+    public LotteryService(LotteryRepository lotteryRepository, UserTicketRepository userTicketRepository, ModelCreator modelCreator) {
+        this.lotteryRepository = lotteryRepository;
+        this.userTicketRepository = userTicketRepository;
         this.modelCreator = modelCreator;
+        //
+    }
+
+    @Transactional
+    public CreateLotteryResponse createLottery(LotteryDto lotteryDto){
+        Lottery lottery = this.modelCreator.createLotteryEntity(lotteryDto);
+
+        Optional<Lottery>  optionalLotteryDuplicate = this.lotteryRepository.findById(lotteryDto.getTicket());
+
+        if(optionalLotteryDuplicate.isPresent()){
+            throw new InternalServerException(LotteryModuleConstant.MSG_CREATE_TICKET_DUPILCATE);
+        }
+
+        try {
+            this.lotteryRepository.save(lottery);
+        }catch (RuntimeException e){
+            throw new InternalServerException(e.getMessage());
+        }catch(Exception e){
+            throw new InternalServerException(LotteryModuleConstant.MSG_CREATE_TICKET_FAIL);
+        }
+
+        return this.modelCreator.createCreateLotteryResponse(lottery);
     }
 
 
-    @Operation(summary = "admin create lottery")
-    @RequestMapping(value = "/admin/lotteries", method = RequestMethod.POST)
-    public CreateLotteryResponse createLottery(
-            @RequestBody @Valid CreateRequest createRequest
-    ) {
-        LotteryDto lotteryDto =  this.modelCreator.createLotteryDto(createRequest);
-        return this.lotteryService.createLottery(lotteryDto);
+    public GetLotteryResponse getAllLottery(){
+        List<String> tickets = this.lotteryRepository.getAllTicket();
+
+        if(tickets.isEmpty()){
+            throw new NotFoundException("Not found lotteries");
+        }
+
+        return this.modelCreator.createGetLotteryResponse(tickets);
+    }
+
+    public ViewLotteryPurchase getLotteryByUserId(String userId){
+        List<UserTicketSummary> userTicketSummaries = this.userTicketRepository.findSumPriceAmountByUserId(userId);
+
+        if(userTicketSummaries.isEmpty()){
+            throw new NotFoundException(LotteryModuleConstant.MSG_USER_TICKET_NOT_FOUND);
+        }
+
+        return this.modelCreator.createViewLotteryPurchase(userTicketSummaries);
     }
 
 
-    @Operation(summary = "get lottery")
-    @RequestMapping(value = "/lotteries", method = RequestMethod.GET)
-    public GetLotteryResponse getAllLottery() {
-        return this.lotteryService.getAllLottery();
+    @Transactional
+    public PurchaseLotteryResponse purchaseLottery(UserTicketDto userTicketDto){
+        Optional<Lottery> optionalLottery = this.lotteryRepository.findById(userTicketDto.getTicket());
+
+        if(optionalLottery.isEmpty()) {
+            throw new NotFoundException("Ticket not found");
+        }
+
+        Lottery lottery = optionalLottery.get();
+
+
+
+        Integer purchaseAmount = this.getDefaultPurchaseAmount(userTicketDto.getAmount());
+
+        if(lottery.getAmount()<purchaseAmount){
+            throw new UnProcessException(LotteryModuleConstant.MSG_PURCHASE_TICKET_AMOUNT_NOT_ENOUGH);
+        }
+
+        Integer newLotteryMasterAmount = lottery.getAmount()-purchaseAmount;
+        lottery.setAmount(newLotteryMasterAmount);
+
+        UserTicket userTicket = this.modelCreator.createUserTicketEntity(userTicketDto);
+        userTicket.setAmount(purchaseAmount);
+        userTicket.setPrice(lottery.getPrice());
+        userTicket.setTotalBill(this.calculateLotteryPrice(lottery.getPrice(),userTicket.getAmount()));
+
+        UserTicket userTicketDb;
+        try{
+            userTicketDb = this.userTicketRepository.save(userTicket);
+            this.lotteryRepository.save(lottery);
+        }catch(Exception e){
+            throw new InternalServerException(LotteryModuleConstant.MSG_PURCHASE_FAIL);
+        }
+        return this.modelCreator.createPurchaseLotteryResponse(userTicketDb);
     }
 
 
-    @Operation(summary = "buy lottery")
-    @RequestMapping(value = "/users/{userId}/lotteries/{ticketId}", method = RequestMethod.POST)
-    public PurchaseLotteryResponse purchaseLottery(
-            @PathVariable(name = "userId") String userId,
-            @PathVariable(name = "ticketId") String ticketId,
-            @RequestBody @Valid PurchaseRequest purchaseRequest
-    ) {
-        UserValidator.validateUserIdFormat(userId);
-        TicketValidator.validateTicketIdFormat(ticketId);
-        UserTicketDto userTicketDto = this.modelCreator.createUserTicketDto(userId,ticketId, purchaseRequest);
-        return this.lotteryService.purchaseLottery(userTicketDto);
+    @Transactional
+    public SellBackLotteryResponse sellBackLottery(UserTicketDto userTicketDto){
+
+        Optional<UserTicketSummary> optionalUserTicketSummary = this.userTicketRepository.findSumPriceAmountByUserIdTicketId(userTicketDto.getUserId(),userTicketDto.getTicket());
+        if(optionalUserTicketSummary.isEmpty()){
+            throw new NotFoundException(LotteryModuleConstant.MSG_USER_TICKET_NOT_FOUND);
+        }
+
+        Optional<Lottery> optionalLottery = this.lotteryRepository.findById(userTicketDto.getTicket());
+        if(optionalLottery.isEmpty()){
+            throw new NotFoundException(LotteryModuleConstant.MSG_TICKET_NOT_FOUND);
+        }
+        UserTicketSummary  userTicketSummary = optionalUserTicketSummary.get();
+
+        Lottery lottery = optionalLottery.get();
+        Integer newLotteryAmount = lottery.getAmount()+userTicketSummary.getTotalTicketAmount();
+        lottery.setAmount(newLotteryAmount);
+
+        try{
+            this.userTicketRepository.deleteUserTicketByUserIdTicket(userTicketDto.getUserId(),userTicketDto.getTicket());
+            this.lotteryRepository.save(lottery);
+        }catch (Exception e){
+            throw new InternalServerException(LotteryModuleConstant.MSG_SELL_BACK_FAIL);
+        }
+
+        return this.modelCreator.createGellBackLotteryResponse(userTicketSummary.getTicket());
     }
 
-    @Operation(summary = "view lottery was purchased by user")
-    @RequestMapping(value = "/users/{userId}/lotteries", method = RequestMethod.GET)
-    public ViewLotteryPurchase viewLotteryPurchaseByUser(
-            @PathVariable(name = "userId") String userId
-    ) {
-        UserValidator.validateUserIdFormat(userId);
-        return this.lotteryService.getLotteryByUserId(userId);
+    private Double calculateLotteryPrice(Double price,int amount){
+        return price*amount;
     }
 
-    @Operation(summary = "refund lottery")
-    @RequestMapping(value = "/users/{userId}/lotteries/{ticketId}", method = RequestMethod.DELETE)
-    public SellBackLotteryResponse sellBackLottery(
-            @PathVariable(name = "userId") String userId,
-            @PathVariable(name = "ticketId") String ticketId
-    ) {
-        UserValidator.validateUserIdFormat(userId);
-        TicketValidator.validateTicketIdFormat(ticketId);
-        UserTicketDto userTicketDto = this.modelCreator.createUserTicketDto(userId,ticketId);
-        return this.lotteryService.sellBackLottery(userTicketDto);
+    private Integer getDefaultPurchaseAmount(Integer amount){
+        return Objects.requireNonNullElse(amount, LotteryModuleConstant.DEFAULT_PURCHASE_TICKET_AMOUNT);
     }
-
-
-
-
 
 
 }
