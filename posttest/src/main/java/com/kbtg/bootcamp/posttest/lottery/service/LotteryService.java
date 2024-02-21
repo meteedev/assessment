@@ -129,7 +129,7 @@ public class LotteryService {
         UserTicketSummary  userTicketSummary = optionalUserTicketSummary.get();
 
         Lottery lottery = optionalLottery.get();
-        Integer newLotteryAmount = lottery.getAmount()+userTicketSummary.getTotalTicketAmount();
+        Integer newLotteryAmount = lottery.getAmount()+userTicketSummary.getTotalTicketAmount().intValue();
         lottery.setAmount(newLotteryAmount);
 
         try{

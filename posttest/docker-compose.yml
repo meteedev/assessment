@@ -1,21 +1,21 @@
 version: '3'
-
 services:
-  postgres:
+  lottery-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    depends_on:
+      - lottery-db
+
+  lottery-db:
     image: postgres:latest
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_DB: lottery
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
     volumes:
-      # - pgdata:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "5432:5432"
-
-volumes:
-  pgdata:
-
-
-
-
