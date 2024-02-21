@@ -13,10 +13,28 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @EnableWebSecurity
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
 public class SpringSecurityConfig {
+
+    private static final String[] AUTH_URL_WHITELIST = {
+            "/users/**",
+            "/lotteries/**",
+            // -- Swagger UI v3 (OpenAPI)
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+
+    };
+
+    private static final String[] ADMIN_URL_LIST = {
+            "/admin"
+    };
+
+
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
@@ -24,10 +42,8 @@ public class SpringSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
-                                .requestMatchers("/admin").hasAnyRole("ADMIN")
-                                .requestMatchers("/users/**").permitAll()
-                                .requestMatchers("/lotteries/**").permitAll()
-                                .requestMatchers("/swagger-ui/**").permitAll()
+                                .requestMatchers(AUTH_URL_WHITELIST).permitAll()
+                                .requestMatchers(ADMIN_URL_LIST).hasAnyRole("ADMIN")
                                 .anyRequest()
                                 .authenticated()
                                 )
