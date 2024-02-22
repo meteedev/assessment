@@ -1,5 +1,4 @@
 package com.kbtg.bootcamp.posttest.lottery.controller;
-
 import com.kbtg.bootcamp.posttest.lottery.model.creator.ModelCreator;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.LotteryDto;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketDto;
@@ -16,6 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class LotteryController {
 
+    public static final String PATH_CREATE_LOTTERY = "/admin/lotteries";
+    public static  final String PATH_VIEW_ALL_LOTTERY = "/lotteries";
+    public static  final String PATH_PURCHASE_LOTTERY = "/users/{userId}/lotteries/{ticketId}";
+    public static  final String PATH_VIEW_LOTTERY_BY_USER = "/users/{userId}/lotteries";
+    public static  final String PATH_SELL_BACK_LOTTERY = "/users/{userId}/lotteries/{ticketId}";
     private final LotteryService lotteryService;
     private final ModelCreator modelCreator;
 
@@ -26,7 +30,7 @@ public class LotteryController {
 
 
     @Operation(summary = "admin create lottery")
-    @RequestMapping(value = "/admin/lotteries", method = RequestMethod.POST)
+    @RequestMapping(value = LotteryController.PATH_CREATE_LOTTERY, method = RequestMethod.POST)
     public ResponseEntity createLottery(
             @RequestBody @Valid CreateRequest createRequest
     ) {
@@ -38,9 +42,7 @@ public class LotteryController {
 
 
     @Operation(summary = "get lottery")
-    @RequestMapping(value = "/lotteries", method = RequestMethod.GET)
-
-
+    @RequestMapping(value = LotteryController.PATH_VIEW_ALL_LOTTERY, method = RequestMethod.GET)
     public ResponseEntity getAllLottery() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(this.lotteryService.getAllLottery());
@@ -48,7 +50,7 @@ public class LotteryController {
 
 
     @Operation(summary = "buy lottery")
-    @RequestMapping(value = "/users/{userId}/lotteries/{ticketId}", method = RequestMethod.POST)
+    @RequestMapping(value = LotteryController.PATH_PURCHASE_LOTTERY, method = RequestMethod.POST)
     public ResponseEntity purchaseLottery(
             @PathVariable(name = "userId") String userId,
             @PathVariable(name = "ticketId") String ticketId
@@ -63,7 +65,7 @@ public class LotteryController {
     }
 
     @Operation(summary = "view lottery was purchased by user")
-    @RequestMapping(value = "/users/{userId}/lotteries", method = RequestMethod.GET)
+    @RequestMapping(value = LotteryController.PATH_VIEW_LOTTERY_BY_USER, method = RequestMethod.GET)
     public ResponseEntity viewLotteryPurchaseByUser(
             @PathVariable(name = "userId") String userId
     ) {
@@ -74,7 +76,7 @@ public class LotteryController {
     }
 
     @Operation(summary = "refund lottery")
-    @RequestMapping(value = "/users/{userId}/lotteries/{ticketId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = LotteryController.PATH_SELL_BACK_LOTTERY, method = RequestMethod.DELETE)
     public ResponseEntity sellBackLottery(
             @PathVariable(name = "userId") String userId,
             @PathVariable(name = "ticketId") String ticketId
@@ -83,7 +85,7 @@ public class LotteryController {
         TicketValidator.validateTicketIdFormat(ticketId);
         UserTicketDto userTicketDto = this.modelCreator.createUserTicketDto(userId,ticketId);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(this.lotteryService.sellBackLottery(userTicketDto));
 
     }

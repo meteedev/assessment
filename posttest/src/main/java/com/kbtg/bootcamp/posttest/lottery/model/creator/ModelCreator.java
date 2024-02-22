@@ -6,7 +6,6 @@ import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketSummary;
 import com.kbtg.bootcamp.posttest.lottery.model.entity.Lottery;
 import com.kbtg.bootcamp.posttest.lottery.model.entity.UserTicket;
 import com.kbtg.bootcamp.posttest.lottery.model.request.CreateRequest;
-import com.kbtg.bootcamp.posttest.lottery.model.request.PurchaseRequest;
 import com.kbtg.bootcamp.posttest.lottery.model.response.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
@@ -23,13 +22,6 @@ public class ModelCreator {
         return lotteryDto;
     }
 
-    public UserTicketDto createUserTicketDto(String userId ,String ticketId,PurchaseRequest purchaseRequest){
-        UserTicketDto userTicketDto =  new UserTicketDto();
-        BeanUtils.copyProperties(purchaseRequest,userTicketDto);
-        userTicketDto.setUserId(userId);
-        userTicketDto.setTicket(ticketId);
-        return userTicketDto;
-    }
 
     public UserTicketDto createUserTicketDto(String userId ,String ticketId){
         UserTicketDto userTicketDto =  new UserTicketDto();
@@ -56,18 +48,14 @@ public class ModelCreator {
 
     public CreateLotteryResponse createCreateLotteryResponse(Lottery lottery){
         return new CreateLotteryResponse(
-                lottery.getTicket(),
-                lottery.getAmount(),
-                lottery.getPrice());
+                lottery.getTicket()
+        );
     }
 
 
     public PurchaseLotteryResponse createPurchaseLotteryResponse(UserTicket userTicket){
         return new PurchaseLotteryResponse(
-                userTicket.getNo(),
-                userTicket.getTicket(),
-                userTicket.getAmount(),
-                userTicket.getPrice()
+                String.valueOf(userTicket.getNo())
         );
     }
 
