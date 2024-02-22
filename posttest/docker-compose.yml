@@ -1,9 +1,13 @@
 version: '3'
+networks:
+  - lottery-nets
 services:
   lottery-app:
     build:
       context: .
       dockerfile: Dockerfile
+    networks:
+      - lottery-nets
     ports:
       - "8888:8888"
     depends_on:
@@ -11,6 +15,8 @@ services:
 
   lottery-db:
     image: postgres:latest
+    networks:
+      - lottery-nets
     ports:
       - "5432:5432"
     environment:
@@ -19,3 +25,4 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
