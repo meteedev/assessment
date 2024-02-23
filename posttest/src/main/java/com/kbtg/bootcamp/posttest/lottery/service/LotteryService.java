@@ -10,6 +10,7 @@ import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketDto;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketSummary;
 import com.kbtg.bootcamp.posttest.lottery.model.entity.Lottery;
 import com.kbtg.bootcamp.posttest.lottery.model.entity.UserTicket;
+import com.kbtg.bootcamp.posttest.lottery.model.mapper.MapStructMapper;
 import com.kbtg.bootcamp.posttest.lottery.model.response.*;
 import com.kbtg.bootcamp.posttest.lottery.repository.LotteryRepository;
 import com.kbtg.bootcamp.posttest.lottery.repository.UserTicketRepository;
@@ -27,23 +28,23 @@ public class LotteryService {
     private final UserTicketRepository userTicketRepository;
     private final ModelCreator modelCreator;
 
+    private final MapStructMapper mapStructMapper;
 
-    public LotteryService(LotteryRepository lotteryRepository, UserTicketRepository userTicketRepository, ModelCreator modelCreator) {
+
+    public LotteryService(LotteryRepository lotteryRepository, UserTicketRepository userTicketRepository, ModelCreator modelCreator, MapStructMapper mapStructMapper) {
         this.lotteryRepository = lotteryRepository;
         this.userTicketRepository = userTicketRepository;
         this.modelCreator = modelCreator;
+        this.mapStructMapper = mapStructMapper;
     }
 
     @Transactional
     public CreateLotteryResponse createLottery(LotteryDto lotteryDto){
-        Lottery lottery = this.modelCreator.createLotteryEntity(lotteryDto);
-
+        Lottery lottery = this.mapStructMapper.mapLotteryDTOToEntity(lotteryDto);
         Optional<Lottery>  optionalLotteryDuplicate = this.lotteryRepository.findById(lotteryDto.getTicket());
-
         if(optionalLotteryDuplicate.isPresent()){
             throw new InternalServerException(LotteryModuleConstant.MSG_CREATE_TICKET_DUPILCATE);
         }
-
         try {
             this.lotteryRepository.save(lottery);
         }catch (RuntimeException e){
@@ -51,8 +52,7 @@ public class LotteryService {
         }catch(Exception e){
             throw new InternalServerException(LotteryModuleConstant.MSG_CREATE_TICKET_FAIL);
         }
-
-        return this.modelCreator.createCreateLotteryResponse(lottery);
+        return this.mapStructMapper.mapLotteryEntityToCreateLotteryResponse(lottery);
     }
 
 
@@ -80,15 +80,11 @@ public class LotteryService {
     @Transactional
     public PurchaseLotteryResponse purchaseLottery(UserTicketDto userTicketDto){
         Optional<Lottery> optionalLottery = this.lotteryRepository.findById(userTicketDto.getTicket());
-
         if(optionalLottery.isEmpty()) {
             throw new NotFoundException("Ticket not found");
         }
 
         Lottery lottery = optionalLottery.get();
-
-
-
         Integer purchaseAmount = this.getDefaultPurchaseAmount(userTicketDto.getAmount());
 
         if(lottery.getAmount()<purchaseAmount){
@@ -98,7 +94,7 @@ public class LotteryService {
         Integer newLotteryMasterAmount = lottery.getAmount()-purchaseAmount;
         lottery.setAmount(newLotteryMasterAmount);
 
-        UserTicket userTicket = this.modelCreator.createUserTicketEntity(userTicketDto);
+        UserTicket userTicket = this.mapStructMapper.mapUserTicketDTOToUserTicket(userTicketDto);
         userTicket.setAmount(purchaseAmount);
         userTicket.setPrice(lottery.getPrice());
         userTicket.setTotalBill(this.calculateLotteryPrice(lottery.getPrice(),userTicket.getAmount()));
@@ -110,7 +106,7 @@ public class LotteryService {
         }catch(Exception e){
             throw new InternalServerException(LotteryModuleConstant.MSG_PURCHASE_FAIL);
         }
-        return this.modelCreator.createPurchaseLotteryResponse(userTicketDb);
+        return this.mapStructMapper.mapUserTicketToPurchaseLotteryResponse(userTicketDb);
     }
 
 
@@ -139,7 +135,7 @@ public class LotteryService {
             throw new InternalServerException(LotteryModuleConstant.MSG_SELL_BACK_FAIL);
         }
 
-        return this.modelCreator.createGellBackLotteryResponse(userTicketSummary.getTicket());
+        return this.modelCreator.createSellBackLotteryResponse(userTicketSummary.getTicket());
     }
 
     private Double calculateLotteryPrice(Double price,int amount){

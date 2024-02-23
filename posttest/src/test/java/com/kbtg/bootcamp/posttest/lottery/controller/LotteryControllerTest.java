@@ -25,7 +25,7 @@ class LotteryControllerTest {
 
     @BeforeEach
     void setUp() {
-        //lotteryDto = LotteryDto.builder().ticket("123456").price(80.8).amount(100).build();
+        lotteryDto = LotteryDto.builder().ticket("123456").price(80.8).amount(100).build();
     }
 
     @AfterEach

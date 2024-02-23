@@ -2,6 +2,7 @@ package com.kbtg.bootcamp.posttest.lottery.controller;
 import com.kbtg.bootcamp.posttest.lottery.model.creator.ModelCreator;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.LotteryDto;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketDto;
+import com.kbtg.bootcamp.posttest.lottery.model.mapper.MapStructMapper;
 import com.kbtg.bootcamp.posttest.lottery.model.request.CreateRequest;
 import com.kbtg.bootcamp.posttest.lottery.service.LotteryService;
 import com.kbtg.bootcamp.posttest.lottery.util.TicketValidator;
@@ -22,10 +23,12 @@ public class LotteryController {
     public static  final String PATH_SELL_BACK_LOTTERY = "/users/{userId}/lotteries/{ticketId}";
     private final LotteryService lotteryService;
     private final ModelCreator modelCreator;
+    private final MapStructMapper mapStructMapper;
 
-    public LotteryController(LotteryService lotteryService, ModelCreator modelCreator) {
+    public LotteryController(LotteryService lotteryService, ModelCreator modelCreator , MapStructMapper mapStructMapper) {
         this.lotteryService = lotteryService;
         this.modelCreator = modelCreator;
+        this.mapStructMapper = mapStructMapper;
     }
 
 
@@ -34,7 +37,7 @@ public class LotteryController {
     public ResponseEntity createLottery(
             @RequestBody @Valid CreateRequest createRequest
     ) {
-        LotteryDto lotteryDto =  this.modelCreator.createLotteryDto(createRequest);
+        LotteryDto lotteryDto =  this.mapStructMapper.mapCreateRequestToDTO(createRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(this.lotteryService.createLottery(lotteryDto));
         //return this.lotteryService.createLottery(lotteryDto);
@@ -70,7 +73,6 @@ public class LotteryController {
             @PathVariable(name = "userId") String userId
     ) {
         UserValidator.validateUserIdFormat(userId);
-
         return ResponseEntity.status(HttpStatus.OK)
                 .body(this.lotteryService.getLotteryByUserId(userId));
     }
@@ -84,7 +86,6 @@ public class LotteryController {
         UserValidator.validateUserIdFormat(userId);
         TicketValidator.validateTicketIdFormat(ticketId);
         UserTicketDto userTicketDto = this.modelCreator.createUserTicketDto(userId,ticketId);
-
         return ResponseEntity.status(HttpStatus.OK)
                 .body(this.lotteryService.sellBackLottery(userTicketDto));
 
