@@ -1,22 +1,37 @@
 version: '3'
-networks:
-  - lottery-nets
+
 services:
+
+#  lottery-app:
+#    image: amazoncorretto:17.0.9-alpine3.18
+#    volumes:
+#      - $PWD:/app
+#    working_dir: /app
+#    networks:
+#      - integration-test-example
+#    command: [ "./gradlew","clean","integrationTest" ]
+
+
   lottery-app:
     build:
       context: .
       dockerfile: Dockerfile
     networks:
-      - lottery-nets
+      - lottery-net
     ports:
       - "8888:8888"
     depends_on:
       - lottery-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://lottery-db:5432/lottery
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
 
   lottery-db:
     image: postgres:latest
     networks:
-      - lottery-nets
+      - lottery-net
     ports:
       - "5432:5432"
     environment:
@@ -26,3 +41,6 @@ services:
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
+networks:
+  lottery-net:
+    driver: bridge
