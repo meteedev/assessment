@@ -27,7 +27,6 @@ public class SpringSecurityConfig {
             // -- Swagger UI v3 (OpenAPI)
             "/v3/api-docs/**",
             "/swagger-ui/**",
-
     };
 
     private static final String[] ADMIN_URL_LIST = {

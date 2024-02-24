@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+
 @Repository
 public interface LotteryRepository extends JpaRepository<Lottery,String> {
-
 
     @Override
     Optional<Lottery> findById(String ticketId);

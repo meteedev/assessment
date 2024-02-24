@@ -43,7 +43,7 @@ public class LotteryService {
         Lottery lottery = this.mapStructMapper.mapLotteryDTOToEntity(lotteryDto);
         Optional<Lottery>  optionalLotteryDuplicate = this.lotteryRepository.findById(lotteryDto.getTicket());
         if(optionalLotteryDuplicate.isPresent()){
-            throw new InternalServerException(LotteryModuleConstant.MSG_CREATE_TICKET_DUPILCATE);
+            throw new InternalServerException(LotteryModuleConstant.MSG_CREATE_TICKET_DUPLICATE);
         }
         try {
             this.lotteryRepository.save(lottery);
@@ -60,7 +60,7 @@ public class LotteryService {
         List<String> tickets = this.lotteryRepository.getAllTicket();
 
         if(tickets.isEmpty()){
-            throw new NotFoundException("Not found lotteries");
+            throw new NotFoundException(LotteryModuleConstant.MSG_VIEW_TICKETS_NOT_FOUND);
         }
 
         return this.modelCreator.createGetLotteryResponse(tickets);

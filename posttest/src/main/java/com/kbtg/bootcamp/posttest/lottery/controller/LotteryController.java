@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,6 +34,7 @@ public class LotteryController {
 
 
     @Operation(summary = "admin create lottery")
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = LotteryController.PATH_CREATE_LOTTERY, method = RequestMethod.POST)
     public ResponseEntity createLottery(
             @RequestBody @Valid CreateRequest createRequest
@@ -40,7 +42,6 @@ public class LotteryController {
         LotteryDto lotteryDto =  this.mapStructMapper.mapCreateRequestToDTO(createRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(this.lotteryService.createLottery(lotteryDto));
-        //return this.lotteryService.createLottery(lotteryDto);
     }
 
 

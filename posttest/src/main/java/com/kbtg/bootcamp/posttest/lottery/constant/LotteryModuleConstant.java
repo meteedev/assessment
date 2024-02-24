@@ -4,6 +4,8 @@ public class LotteryModuleConstant {
     //common
     public static final String  MSG_DIGIT_ONLY = "Input digit only";
     public static final String  MSG_TICKET_NOT_FOUND = "Lottery id not found";
+
+    public static final String MSG_VIEW_TICKETS_NOT_FOUND  = "Not found lotteries";
     public static final String  MSG_USER_TICKET_NOT_FOUND = "Transaction User buy this lottery id not found";
 
 
@@ -15,12 +17,14 @@ public class LotteryModuleConstant {
     public static final Integer TICKET_LENGTH = 6;
 
     public static final String  MSG_INVALID_TICKET_FORMAT = "Lottery invalid format";
-    public static final String MSG_AMOUNT_NOT_LESS_THAN_ZERO = "Amount must not be less than 0";
+
 
 
     //create lottery
     public static final String MSG_CREATE_TICKET_FAIL = "Failed to create Lottery";
-    public static final String MSG_CREATE_TICKET_DUPILCATE = "Failed to create lottery duplicated lottery id";
+    public static final String MSG_CREATE_TICKET_DUPLICATE = "Failed to create lottery duplicated lottery id";
+
+
 
     //buy lottery
     public static final Integer DEFAULT_PURCHASE_TICKET_AMOUNT = 1;

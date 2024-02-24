@@ -2,16 +2,6 @@ version: '3'
 
 services:
 
-#  lottery-app:
-#    image: amazoncorretto:17.0.9-alpine3.18
-#    volumes:
-#      - $PWD:/app
-#    working_dir: /app
-#    networks:
-#      - integration-test-example
-#    command: [ "./gradlew","clean","integrationTest" ]
-
-
   lottery-app:
     build:
       context: .
