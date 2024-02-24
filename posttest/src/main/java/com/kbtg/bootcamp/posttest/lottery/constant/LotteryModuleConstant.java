@@ -29,6 +29,8 @@ public class LotteryModuleConstant {
     //buy lottery
     public static final Integer DEFAULT_PURCHASE_TICKET_AMOUNT = 1;
     public static final String MSG_PURCHASE_TICKET_AMOUNT_NOT_ENOUGH = "Lottery amount not enough for buy";
+
+    public static final String MSG_PURCHASE_TICKET_NOTFOUND_IN_MASTER_TABLE = "Ticket not found in master table";
     public static final String MSG_PURCHASE_FAIL = "Failed to purchase Lottery";
 
     //sell back

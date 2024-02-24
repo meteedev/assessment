@@ -81,7 +81,7 @@ public class LotteryService {
     public PurchaseLotteryResponse purchaseLottery(UserTicketDto userTicketDto){
         Optional<Lottery> optionalLottery = this.lotteryRepository.findById(userTicketDto.getTicket());
         if(optionalLottery.isEmpty()) {
-            throw new NotFoundException("Ticket not found");
+            throw new UnProcessException(LotteryModuleConstant.MSG_PURCHASE_TICKET_NOTFOUND_IN_MASTER_TABLE);
         }
 
         Lottery lottery = optionalLottery.get();
@@ -106,6 +106,7 @@ public class LotteryService {
         }catch(Exception e){
             throw new InternalServerException(LotteryModuleConstant.MSG_PURCHASE_FAIL);
         }
+
         return this.mapStructMapper.mapUserTicketToPurchaseLotteryResponse(userTicketDb);
     }
 
@@ -120,7 +121,7 @@ public class LotteryService {
 
         Optional<Lottery> optionalLottery = this.lotteryRepository.findById(userTicketDto.getTicket());
         if(optionalLottery.isEmpty()){
-            throw new NotFoundException(LotteryModuleConstant.MSG_TICKET_NOT_FOUND);
+            throw new UnProcessException(LotteryModuleConstant.MSG_TICKET_NOT_FOUND);
         }
         UserTicketSummary  userTicketSummary = optionalUserTicketSummary.get();
 
