@@ -1,9 +1,13 @@
-#docker build -f Dockerfile.multi -t posttest:latest .
 # stage-1 build artifact
 FROM amazoncorretto:17.0.9-alpine3.18 as builder
 WORKDIR /app
 ADD . .
-RUN ["chmod +x ./gradlew","bootJar"]
+
+# set gradlew can execute
+RUN chmod +x ./gradlew
+
+# boot jar
+RUN ["./gradlew","bootJar"]
 
 # stage-2 running image
 FROM gcr.io/distroless/java17-debian12:latest
