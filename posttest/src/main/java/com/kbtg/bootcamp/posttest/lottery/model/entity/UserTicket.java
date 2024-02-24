@@ -2,15 +2,13 @@ package com.kbtg.bootcamp.posttest.lottery.model.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Setter
+@Getter
 @Entity
 @Table(name="user_ticket")
 @NoArgsConstructor
-@AllArgsConstructor
 public class UserTicket {
 
     @Id

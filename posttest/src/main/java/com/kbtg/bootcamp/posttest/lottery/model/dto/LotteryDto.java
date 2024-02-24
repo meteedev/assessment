@@ -1,11 +1,10 @@
 package com.kbtg.bootcamp.posttest.lottery.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Builder
-@Data
+
+@Getter
+@Setter
 @AllArgsConstructor
 public class LotteryDto {
     private String ticket;

@@ -3,7 +3,7 @@
 FROM amazoncorretto:17.0.9-alpine3.18 as builder
 WORKDIR /app
 ADD . .
-RUN ["./gradlew","bootJar"]
+RUN ["chmod +x ./gradlew","bootJar"]
 
 # stage-2 running image
 FROM gcr.io/distroless/java17-debian12:latest

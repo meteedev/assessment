@@ -7,9 +7,12 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @AllArgsConstructor
-@Data
+@Setter
+@Getter
 public class CreateRequest {
 
     static final int TICKET_LENGTH  = 6;

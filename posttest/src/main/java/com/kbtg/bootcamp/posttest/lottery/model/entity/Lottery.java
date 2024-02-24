@@ -3,8 +3,11 @@ package com.kbtg.bootcamp.posttest.lottery.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 @Entity
 @Table(name = "lottery")
 public class Lottery {

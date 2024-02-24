@@ -1,11 +1,9 @@
 package com.kbtg.bootcamp.posttest.lottery.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@AllArgsConstructor
+@Setter
+@Getter
 @NoArgsConstructor
 public class UserTicketDto {
     private String userId;

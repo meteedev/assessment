@@ -1,6 +1,6 @@
 package com.kbtg.bootcamp.posttest.lottery.controller;
 
-import com.kbtg.bootcamp.posttest.config.SpringSecurityConfig;
+import com.kbtg.bootcamp.posttest.config.security.SpringSecurityConfig;
 import com.kbtg.bootcamp.posttest.exceptions.NotFoundException;
 import com.kbtg.bootcamp.posttest.lottery.constant.LotteryModuleConstant;
 import com.kbtg.bootcamp.posttest.lottery.model.creator.ModelCreator;

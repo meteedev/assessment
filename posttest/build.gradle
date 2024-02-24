@@ -27,7 +27,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.postgresql:postgresql'
 
-	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	compileOnly 'org.mapstruct:mapstruct:1.5.5.Final'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok','org.mapstruct:mapstruct-processor:1.5.5.Final'
@@ -47,6 +47,18 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
 
+jacocoTestReport {
+	dependsOn test // tests are required to run before generating the report
+
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					"com/kbtg/bootcamp/posttest/lottery/model/mapper/**"
+			])
+		}))
+	}
 }
 

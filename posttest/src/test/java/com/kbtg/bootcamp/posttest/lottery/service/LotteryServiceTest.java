@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
@@ -100,7 +99,7 @@ class LotteryServiceTest {
     }
 
     @Test
-    @DisplayName("Create lottery ticket have incident RuntimerException")
+    @DisplayName("Create lottery ticket have incident RuntimeException")
     public void when_createLottery_have_RuntimeException_Throws_InternalServerException(){
         LotteryDto lotteryDto = new LotteryDto("123456",10,80.0);
         // Create a sample Lottery
@@ -116,9 +115,7 @@ class LotteryServiceTest {
         doThrow(new RuntimeException("Simulated RuntimeException")).when(lotteryRepository).save(any(Lottery.class));
 
         // Use assertThrows to verify the expected exception
-        InternalServerException thrownException = assertThrows(InternalServerException.class, () -> {
-            lotteryService.createLottery(lotteryDto);
-        });
+        InternalServerException thrownException = assertThrows(InternalServerException.class, () -> lotteryService.createLottery(lotteryDto));
 
         // Optionally, you can assert further details about the exception if needed
         assertEquals("Simulated RuntimeException", thrownException.getMessage());
@@ -153,9 +150,7 @@ class LotteryServiceTest {
         when(lotteryRepository.getAllTicket()).thenReturn(Collections.emptyList());
 
         // Use assertThrows to verify the expected exception
-        NotFoundException thrownException = assertThrows(NotFoundException.class, () -> {
-            lotteryService.getAllLottery();
-        });
+        NotFoundException thrownException = assertThrows(NotFoundException.class, () -> lotteryService.getAllLottery());
 
         // Optionally, you can assert further details about the exception if needed
         assertEquals(LotteryModuleConstant.MSG_VIEW_TICKETS_NOT_FOUND, thrownException.getMessage());
@@ -224,9 +219,7 @@ class LotteryServiceTest {
         when(lotteryRepository.findById(userTicketDto.getTicket())).thenReturn(Optional.empty());
 
         // Call the method you want to test and use assertThrows to verify the expected exception
-        UnProcessException thrownException = assertThrows(UnProcessException.class, () -> {
-            lotteryService.purchaseLottery(userTicketDto);
-        });
+        var thrownException = assertThrows(UnProcessException.class, () -> lotteryService.purchaseLottery(userTicketDto));
 
         // Optionally, you can assert further details about the exception if needed
         assertEquals(LotteryModuleConstant.MSG_PURCHASE_TICKET_NOTFOUND_IN_MASTER_TABLE, thrownException.getMessage());
@@ -240,8 +233,10 @@ class LotteryServiceTest {
         // Create a sample userId
         String userId = "1234567890";
 
-        UserTicketSummary userTicketSummary1 = new UserTicketSummary("123456","1111111111",Long.valueOf(2),160.0);
-        UserTicketSummary userTicketSummary2 = new UserTicketSummary("111222","1111111111",Long.valueOf(1),100.0);
+
+
+        UserTicketSummary userTicketSummary1 = new UserTicketSummary("123456","1111111111",2L,160.0);
+        UserTicketSummary userTicketSummary2 = new UserTicketSummary("111222", "2222222222",1L,100.0);
 
         // Create a sample list of UserTicketSummary
         List<UserTicketSummary> sampleUserTicketSummaries = Arrays.asList(
@@ -272,8 +267,8 @@ class LotteryServiceTest {
     }
 
     @Test
-    @DisplayName("View Purchase lottery not foun tranasaction")
-    public void when_View_Purchase_Lottery_NotFound_tranasaction_Throws_NotFoundException() {
+    @DisplayName("View Purchase lottery not found transaction")
+    public void when_View_Purchase_Lottery_NotFound_transaction_Throws_NotFoundException() {
         // Create a sample userId
         String userId = "1234567890";
 
@@ -283,9 +278,7 @@ class LotteryServiceTest {
         // Mock the behavior of modelCreator (not needed for this case)
 
         // Use assertThrows to verify the expected exception
-        NotFoundException thrownException = assertThrows(NotFoundException.class, () -> {
-            lotteryService.getLotteryByUserId(userId);
-        });
+        NotFoundException thrownException = assertThrows(NotFoundException.class, () -> lotteryService.getLotteryByUserId(userId));
 
         // Optionally, you can assert further details about the exception if needed
         assertEquals(LotteryModuleConstant.MSG_USER_TICKET_NOT_FOUND, thrownException.getMessage());
@@ -316,7 +309,7 @@ class LotteryServiceTest {
         UserTicket userTicketDb = new UserTicket();
         userTicketDb.setNo(1);
 
-        UserTicketSummary userTicketSummary = new UserTicketSummary("123456","1111111111",Long.valueOf(2),160.0);
+        UserTicketSummary userTicketSummary = new UserTicketSummary("123456","1111111111",2L,160.0);
 
         SellBackLotteryResponse sellBackLotteryResponse = new SellBackLotteryResponse(userTicketSummary.getTicket());
 
@@ -357,9 +350,7 @@ class LotteryServiceTest {
 
 
         // Use assertThrows to verify the expected exception
-        NotFoundException thrownException = assertThrows(NotFoundException.class, () -> {
-            lotteryService.sellBackLottery(userTicketDto);
-        });
+        NotFoundException thrownException = assertThrows(NotFoundException.class, () -> lotteryService.sellBackLottery(userTicketDto));
 
         // Optionally, you can assert further details about the exception if needed
         assertEquals(LotteryModuleConstant.MSG_USER_TICKET_NOT_FOUND, thrownException.getMessage());
@@ -370,7 +361,7 @@ class LotteryServiceTest {
     @DisplayName("Sell back lottery not found transaction")
     public void when_Sell_back_Lottery_NotFound_Lottery_in_table_Throws_NotFoundException() {
 
-        UserTicketSummary userTicketSummary = new UserTicketSummary("123456","1111111111",Long.valueOf(2),160.0);
+        UserTicketSummary userTicketSummary = new UserTicketSummary("123456","1111111111",2L,160.0);
 
         // Create a sample UserTicketDto
         UserTicketDto userTicketDto = new UserTicketDto(/* your userTicketDto properties here */);
@@ -385,9 +376,7 @@ class LotteryServiceTest {
         // Mock the behavior of modelCreator (not needed for this case)
 
         // Use assertThrows to verify the expected exception
-        UnProcessException thrownException = assertThrows(UnProcessException.class, () -> {
-            lotteryService.sellBackLottery(userTicketDto);
-        });
+        UnProcessException thrownException = assertThrows(UnProcessException.class, () -> lotteryService.sellBackLottery(userTicketDto));
 
         // Optionally, you can assert further details about the exception if needed
         assertEquals(LotteryModuleConstant.MSG_TICKET_NOT_FOUND, thrownException.getMessage());
