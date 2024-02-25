@@ -223,6 +223,8 @@ class LotteryServiceTest {
     }
 
 
+
+
     @Test
     @DisplayName("View Purchase lottery")
     public void when_View_Purchase_Lottery_Return_ViewLotteryPurchase() {
