@@ -6,7 +6,6 @@ import com.kbtg.bootcamp.posttest.lottery.constant.LotteryModuleConstant;
 import com.kbtg.bootcamp.posttest.lottery.model.creator.ModelCreator;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.LotteryDto;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketDto;
-import com.kbtg.bootcamp.posttest.lottery.model.mapper.MapStructMapper;
 import com.kbtg.bootcamp.posttest.lottery.model.request.CreateRequest;
 import com.kbtg.bootcamp.posttest.lottery.model.response.*;
 import com.kbtg.bootcamp.posttest.lottery.service.LotteryService;
@@ -40,9 +39,6 @@ public class LotteryControllerTest {
     private ModelCreator modelCreator; // Mocking the ModelCreator bean
     @MockBean
     private LotteryService lotteryService;
-    @MockBean
-    private MapStructMapper mapStructMapper;
-
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -59,7 +55,7 @@ public class LotteryControllerTest {
         Integer amount = 10;
 
         CreateRequest createRequest = new CreateRequest(ticketId,price,amount);
-        LotteryDto lotteryDto = this.mapStructMapper.mapCreateRequestToDTO(createRequest);
+        LotteryDto lotteryDto = this.modelCreator.mapCreateRequestToLotteryDTO(createRequest);
 
 
         when(lotteryService.createLottery(lotteryDto))
@@ -85,7 +81,7 @@ public class LotteryControllerTest {
         Integer amount = 10;
 
         CreateRequest createRequest = new CreateRequest(ticketId,price,amount);
-        LotteryDto lotteryDto = this.mapStructMapper.mapCreateRequestToDTO(createRequest);
+        LotteryDto lotteryDto = this.modelCreator.mapCreateRequestToLotteryDTO(createRequest);
         CreateLotteryResponse createLotteryResponse = new CreateLotteryResponse(ticketId);;
 
         when(lotteryService.createLottery(lotteryDto))

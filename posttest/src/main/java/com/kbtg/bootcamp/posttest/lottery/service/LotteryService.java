@@ -10,7 +10,6 @@ import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketDto;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketSummary;
 import com.kbtg.bootcamp.posttest.lottery.model.entity.Lottery;
 import com.kbtg.bootcamp.posttest.lottery.model.entity.UserTicket;
-import com.kbtg.bootcamp.posttest.lottery.model.mapper.MapStructMapper;
 import com.kbtg.bootcamp.posttest.lottery.model.response.*;
 import com.kbtg.bootcamp.posttest.lottery.repository.LotteryRepository;
 import com.kbtg.bootcamp.posttest.lottery.repository.UserTicketRepository;
@@ -28,19 +27,19 @@ public class LotteryService {
     private final UserTicketRepository userTicketRepository;
     private final ModelCreator modelCreator;
 
-    private final MapStructMapper mapStructMapper;
 
 
-    public LotteryService(LotteryRepository lotteryRepository, UserTicketRepository userTicketRepository, ModelCreator modelCreator, MapStructMapper mapStructMapper) {
+
+    public LotteryService(LotteryRepository lotteryRepository, UserTicketRepository userTicketRepository, ModelCreator modelCreator) {
         this.lotteryRepository = lotteryRepository;
         this.userTicketRepository = userTicketRepository;
         this.modelCreator = modelCreator;
-        this.mapStructMapper = mapStructMapper;
+
     }
 
     @Transactional
     public CreateLotteryResponse createLottery(LotteryDto lotteryDto){
-        Lottery lottery = this.mapStructMapper.mapLotteryDTOToEntity(lotteryDto);
+        Lottery lottery = this.modelCreator.mapLotteryDTOToLotteryEntity(lotteryDto);
         Optional<Lottery>  optionalLotteryDuplicate = this.lotteryRepository.findById(lotteryDto.getTicket());
         if(optionalLotteryDuplicate.isPresent()){
             throw new InternalServerException(LotteryModuleConstant.MSG_CREATE_TICKET_DUPLICATE);
@@ -52,7 +51,7 @@ public class LotteryService {
         }catch(Exception e){
             throw new InternalServerException(LotteryModuleConstant.MSG_CREATE_TICKET_FAIL);
         }
-        return this.mapStructMapper.mapLotteryEntityToCreateLotteryResponse(lottery);
+        return this.modelCreator.mapLotteryEntityToCreateLotteryResponse(lottery);
     }
 
 
@@ -81,7 +80,7 @@ public class LotteryService {
     public PurchaseLotteryResponse purchaseLottery(UserTicketDto userTicketDto){
         Optional<Lottery> optionalLottery = this.lotteryRepository.findById(userTicketDto.getTicket());
         if(optionalLottery.isEmpty()) {
-            throw new UnProcessException(LotteryModuleConstant.MSG_PURCHASE_TICKET_NOTFOUND_IN_MASTER_TABLE);
+            throw new UnProcessException(LotteryModuleConstant.MSG_PURCHASE_TICKET_NOT_FOUND_IN_MASTER_TABLE);
         }
 
         Lottery lottery = optionalLottery.get();
@@ -94,7 +93,7 @@ public class LotteryService {
         Integer newLotteryMasterAmount = lottery.getAmount()-purchaseAmount;
         lottery.setAmount(newLotteryMasterAmount);
 
-        UserTicket userTicket = this.mapStructMapper.mapUserTicketDTOToUserTicket(userTicketDto);
+        UserTicket userTicket = this.modelCreator.mapUserTicketDTOToUserTicketEntity(userTicketDto);
         userTicket.setAmount(purchaseAmount);
         userTicket.setPrice(lottery.getPrice());
         userTicket.setTotalBill(this.calculateLotteryPrice(lottery.getPrice(),userTicket.getAmount()));
@@ -107,7 +106,7 @@ public class LotteryService {
             throw new InternalServerException(LotteryModuleConstant.MSG_PURCHASE_FAIL);
         }
 
-        return this.mapStructMapper.mapUserTicketToPurchaseLotteryResponse(userTicketDb);
+        return this.modelCreator.mapUserTicketToPurchaseLotteryResponse(userTicketDb);
     }
 
 

@@ -1,39 +1,39 @@
 package com.kbtg.bootcamp.posttest.lottery.constant;
 
-public class LotteryModuleConstant {
+public interface LotteryModuleConstant {
     //common
-    public static final String  MSG_DIGIT_ONLY = "Input digit only";
-    public static final String  MSG_TICKET_NOT_FOUND = "Lottery id not found";
+    String  MSG_DIGIT_ONLY = "Input digit only";
+    String  MSG_TICKET_NOT_FOUND = "Lottery id not found";
 
-    public static final String MSG_VIEW_TICKETS_NOT_FOUND  = "Not found lotteries";
-    public static final String  MSG_USER_TICKET_NOT_FOUND = "Transaction User buy this lottery id not found";
+    String MSG_VIEW_TICKETS_NOT_FOUND  = "Not found lotteries";
+    String  MSG_USER_TICKET_NOT_FOUND = "Transaction User buy this lottery id not found";
 
 
     // userId
-    public static final Integer USER_ID_LENGTH = 10;
-    public static final String  MSG_INVALID_USER_FORMAT = "User ID invalid format";
+    Integer USER_ID_LENGTH = 10;
+    String  MSG_INVALID_USER_FORMAT = "User ID invalid format";
 
     // ticketId
-    public static final Integer TICKET_LENGTH = 6;
+    Integer TICKET_LENGTH = 6;
 
-    public static final String  MSG_INVALID_TICKET_FORMAT = "Lottery invalid format";
+    String  MSG_INVALID_TICKET_FORMAT = "Lottery invalid format";
 
 
 
     //create lottery
-    public static final String MSG_CREATE_TICKET_FAIL = "Failed to create Lottery";
-    public static final String MSG_CREATE_TICKET_DUPLICATE = "Failed to create lottery duplicated lottery id";
+    String MSG_CREATE_TICKET_FAIL = "Failed to create Lottery";
+    String MSG_CREATE_TICKET_DUPLICATE = "Failed to create lottery duplicated lottery id";
 
 
 
     //buy lottery
-    public static final Integer DEFAULT_PURCHASE_TICKET_AMOUNT = 1;
-    public static final String MSG_PURCHASE_TICKET_AMOUNT_NOT_ENOUGH = "Lottery amount not enough for buy";
+    Integer DEFAULT_PURCHASE_TICKET_AMOUNT = 1;
+    String MSG_PURCHASE_TICKET_AMOUNT_NOT_ENOUGH = "Lottery amount not enough for buy";
 
-    public static final String MSG_PURCHASE_TICKET_NOTFOUND_IN_MASTER_TABLE = "Ticket not found in master table";
-    public static final String MSG_PURCHASE_FAIL = "Failed to purchase Lottery";
+    String MSG_PURCHASE_TICKET_NOT_FOUND_IN_MASTER_TABLE = "Ticket not found in master table";
+    String MSG_PURCHASE_FAIL = "Failed to purchase Lottery";
 
     //sell back
-    public static final String MSG_SELL_BACK_FAIL = "Failed to sell back Lottery";
+    String MSG_SELL_BACK_FAIL = "Failed to sell back Lottery";
 
 }

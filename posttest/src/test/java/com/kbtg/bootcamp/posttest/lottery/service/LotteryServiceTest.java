@@ -10,7 +10,6 @@ import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketDto;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketSummary;
 import com.kbtg.bootcamp.posttest.lottery.model.entity.Lottery;
 import com.kbtg.bootcamp.posttest.lottery.model.entity.UserTicket;
-import com.kbtg.bootcamp.posttest.lottery.model.mapper.MapStructMapper;
 import com.kbtg.bootcamp.posttest.lottery.model.response.*;
 import com.kbtg.bootcamp.posttest.lottery.repository.LotteryRepository;
 import com.kbtg.bootcamp.posttest.lottery.repository.UserTicketRepository;
@@ -42,9 +41,6 @@ class LotteryServiceTest {
     UserTicketRepository userTicketRepository;
 
     @Mock
-    MapStructMapper mapStructMapper;
-
-    @Mock
     ModelCreator modelCreator;
 
     @InjectMocks
@@ -61,8 +57,8 @@ class LotteryServiceTest {
         CreateLotteryResponse createLotteryResponse = new CreateLotteryResponse(lotteryDto.getTicket());
 
         // Mock the behavior of mapStructMapper
-        when(mapStructMapper.mapLotteryDTOToEntity(any(LotteryDto.class))).thenReturn(lottery);
-        when(mapStructMapper.mapLotteryEntityToCreateLotteryResponse(any(Lottery.class))).thenReturn(createLotteryResponse);
+        when(modelCreator.mapLotteryDTOToLotteryEntity(any(LotteryDto.class))).thenReturn(lottery);
+        when(modelCreator.mapLotteryEntityToCreateLotteryResponse(any(Lottery.class))).thenReturn(createLotteryResponse);
 
         // Mock the behavior of lotteryRepository
         when(lotteryRepository.findById(anyString())).thenReturn(Optional.empty()); // No duplicate ticket
@@ -90,8 +86,8 @@ class LotteryServiceTest {
         // Create a sample CreateLotteryResponse
         CreateLotteryResponse createLotteryResponse = new CreateLotteryResponse(lotteryDto.getTicket());
 
-        when(mapStructMapper.mapLotteryDTOToEntity(any(LotteryDto.class))).thenReturn(lottery);
-        when(mapStructMapper.mapLotteryEntityToCreateLotteryResponse(any(Lottery.class))).thenReturn(createLotteryResponse);
+        when(modelCreator.mapLotteryDTOToLotteryEntity(any(LotteryDto.class))).thenReturn(lottery);
+        when(modelCreator.mapLotteryEntityToCreateLotteryResponse(any(Lottery.class))).thenReturn(createLotteryResponse);
         when(lotteryRepository.findById(anyString())).thenReturn(Optional.of(lottery)); // duplicate ticket
 
         assertThrows(InternalServerException.class, () -> lotteryService.createLottery(lotteryDto));
@@ -106,7 +102,7 @@ class LotteryServiceTest {
         Lottery lottery = new Lottery();
 
         // Mock the behavior of mapStructMapper
-        when(mapStructMapper.mapLotteryDTOToEntity(any(LotteryDto.class))).thenReturn(lottery);
+        when(modelCreator.mapLotteryDTOToLotteryEntity(any(LotteryDto.class))).thenReturn(lottery);
 
         // Mock the behavior of lotteryRepository
         when(lotteryRepository.findById(anyString())).thenReturn(Optional.empty());
@@ -185,13 +181,13 @@ class LotteryServiceTest {
         when(lotteryRepository.findById(userTicketDto.getTicket())).thenReturn(Optional.of(lottery));
 
         // Mock the behavior of mapStructMapper
-        when(mapStructMapper.mapUserTicketDTOToUserTicket(any(UserTicketDto.class)))
+        when(modelCreator.mapUserTicketDTOToUserTicketEntity(any(UserTicketDto.class)))
                 .thenReturn(new UserTicket(/* your UserTicket properties here */));
 
         // Mock the behavior of userTicketRepository
         when(userTicketRepository.save(any(UserTicket.class))).thenReturn(userTicketDb);
 
-        when(mapStructMapper.mapUserTicketToPurchaseLotteryResponse(any(UserTicket.class)))
+        when(modelCreator.mapUserTicketToPurchaseLotteryResponse(any(UserTicket.class)))
                 .thenReturn(new PurchaseLotteryResponse(String.valueOf(userTicketDb.getNo())));
 
         // Call the method you want to test
@@ -222,7 +218,7 @@ class LotteryServiceTest {
         var thrownException = assertThrows(UnProcessException.class, () -> lotteryService.purchaseLottery(userTicketDto));
 
         // Optionally, you can assert further details about the exception if needed
-        assertEquals(LotteryModuleConstant.MSG_PURCHASE_TICKET_NOTFOUND_IN_MASTER_TABLE, thrownException.getMessage());
+        assertEquals(LotteryModuleConstant.MSG_PURCHASE_TICKET_NOT_FOUND_IN_MASTER_TABLE, thrownException.getMessage());
         // Add more assertions based on your specific requirements
     }
 
@@ -301,7 +297,8 @@ class LotteryServiceTest {
         userTicketDto.setAmount(amount);
         userTicketDto.setUserId(userId);
 
-        Lottery lottery =  new Lottery();
+        Lottery lottery;
+        lottery = new Lottery();
         lottery.setTicket(ticket);
         lottery.setPrice(price);
         lottery.setAmount(10);

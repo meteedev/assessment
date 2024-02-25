@@ -1,16 +1,17 @@
 package com.kbtg.bootcamp.posttest.lottery.model.creator;
 
+import com.kbtg.bootcamp.posttest.lottery.model.dto.LotteryDto;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketDto;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketSummary;
-import com.kbtg.bootcamp.posttest.lottery.model.response.GetLotteryResponse;
-import com.kbtg.bootcamp.posttest.lottery.model.response.SellBackLotteryResponse;
-import com.kbtg.bootcamp.posttest.lottery.model.response.ViewLotteryPurchase;
+import com.kbtg.bootcamp.posttest.lottery.model.entity.Lottery;
+import com.kbtg.bootcamp.posttest.lottery.model.entity.UserTicket;
+import com.kbtg.bootcamp.posttest.lottery.model.request.CreateRequest;
+import com.kbtg.bootcamp.posttest.lottery.model.response.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 class ModelCreatorTest {
@@ -58,4 +59,70 @@ class ModelCreatorTest {
         SellBackLotteryResponse sellBackLotteryResponse = modelCreator.createSellBackLotteryResponse(ticket);
         assertEquals(ticket,sellBackLotteryResponse.ticket());
     }
+
+    @Test
+    void mapCreateRequestToLotteryDTO(){
+        String ticket = "T1";
+        Double price = 80.0;
+        Integer amount = 10;
+        CreateRequest createRequest = new CreateRequest(ticket,price,amount);
+        LotteryDto lotteryDto = modelCreator.mapCreateRequestToLotteryDTO(createRequest);
+        assertEquals(ticket,lotteryDto.getTicket());
+        assertEquals(price,lotteryDto.getPrice());
+        assertEquals(amount,lotteryDto.getAmount());
+    }
+
+
+    @Test
+    void mapLotteryDTOToLotteryEntity(){
+        String ticket = "T1";
+        Double price = 80.0;
+        Integer amount = 10;
+
+        LotteryDto lotteryDto = new LotteryDto(ticket,amount,price);
+        Lottery lottery = modelCreator.mapLotteryDTOToLotteryEntity(lotteryDto);
+
+        assertEquals(ticket,lottery.getTicket());
+        assertEquals(price,lottery.getPrice());
+        assertEquals(amount,lottery.getAmount());
+    }
+
+    @Test
+    void  mapLotteryEntityToCreateLotteryResponse() {
+
+        String ticket = "T1";
+        Lottery lottery = new Lottery();
+
+        lottery.setTicket(ticket);
+        CreateLotteryResponse createLotteryResponse = modelCreator.mapLotteryEntityToCreateLotteryResponse(lottery);
+
+        assertEquals(ticket,createLotteryResponse.ticket());
+
+    }
+
+    @Test
+    void  mapUserTicketDTOToUserTicketEntity() {
+        String ticket = "T1";
+        String userId = "U1";
+        UserTicketDto userTicketDto = new UserTicketDto();
+        userTicketDto.setUserId(userId);
+        userTicketDto.setTicket(ticket);
+
+        UserTicket userTicket =  modelCreator.mapUserTicketDTOToUserTicketEntity(userTicketDto);
+        assertEquals(ticket,userTicket.getTicket());
+        assertEquals(userId,userTicket.getUserId());
+    }
+
+
+    @Test
+    void mapUserTicketToPurchaseLotteryResponse(){
+        int no  = 1;
+        UserTicket userTicket = new UserTicket();
+        userTicket.setNo(no);
+
+        PurchaseLotteryResponse purchaseLotteryResponse = modelCreator.mapUserTicketToPurchaseLotteryResponse(userTicket);
+
+        assertEquals(String.valueOf(no),purchaseLotteryResponse.id());
+    }
+
 }
