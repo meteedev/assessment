@@ -1,6 +1,5 @@
 package com.kbtg.bootcamp.posttest.lottery.model.dto;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,10 +7,10 @@ import lombok.Setter;
 @Setter
 @Getter
 public class UserTicketSummary {
-    private String ticket;
-    private String userId;
-    private Long totalTicketAmount;
-    private Double totalTicketBillPrice;
+	private String ticket;
+	private String userId;
+	private Long totalTicketAmount;
+	private Double totalTicketBillPrice;
 }
 
 

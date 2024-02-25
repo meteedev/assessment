@@ -11,24 +11,24 @@ import lombok.*;
 @NoArgsConstructor
 public class UserTicket {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer no;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer no;
 
-    @Column(name = "user_id")
-    private String userId;
+	@Column(name = "user_id")
+	private String userId;
 
-    @Column(name = "ticket")
-    private String ticket;
+	@Column(name = "ticket")
+	private String ticket;
 
-    @Column(name = "amount")
-    private Integer amount;
+	@Column(name = "amount")
+	private Integer amount;
 
-    @Column(name = "price")
-    private Double price;
+	@Column(name = "price")
+	private Double price;
 
-    @Column(name = "total_bill")
-    private Double totalBill;
+	@Column(name = "total_bill")
+	private Double totalBill;
 
 
 }

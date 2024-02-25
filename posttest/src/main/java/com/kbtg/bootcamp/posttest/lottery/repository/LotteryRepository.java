@@ -12,11 +12,11 @@ import java.util.Optional;
 @Repository
 public interface LotteryRepository extends JpaRepository<Lottery,String> {
 
-    @Override
-    Optional<Lottery> findById(String ticketId);
+	@Override
+	Optional<Lottery> findById(String ticketId);
 
-    @Query(value = "SELECT ticket FROM lottery", nativeQuery = true)
-    List<String> getAllTicket();
+	@Query(value = "SELECT ticket FROM lottery", nativeQuery = true)
+	List<String> getAllTicket();
 
 
 

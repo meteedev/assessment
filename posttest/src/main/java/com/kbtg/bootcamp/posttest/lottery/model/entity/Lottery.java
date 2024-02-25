@@ -2,7 +2,6 @@ package com.kbtg.bootcamp.posttest.lottery.model.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,14 +11,14 @@ import lombok.Setter;
 @Table(name = "lottery")
 public class Lottery {
 
-    @Id
-    @Column(name="ticket" )
-    private String ticket;
+	@Id
+	@Column(name="ticket" )
+	private String ticket;
 
-    @Column(name="amount")
-    private Integer amount;
+	@Column(name="amount")
+	private Integer amount;
 
-    @Column(name="price")
-    private Double price;
+	@Column(name="price")
+	private Double price;
 
 }

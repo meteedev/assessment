@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 public class LotteryDto {
-    private String ticket;
-    private Integer amount;
-    private Double price;
+	private String ticket;
+	private Integer amount;
+	private Double price;
 }

@@ -23,128 +23,128 @@ import java.util.Optional;
 @Service
 public class LotteryService {
 
-    private final LotteryRepository lotteryRepository;
-    private final UserTicketRepository userTicketRepository;
-    private final ModelCreator modelCreator;
+	private final LotteryRepository lotteryRepository;
+	private final UserTicketRepository userTicketRepository;
+	private final ModelCreator modelCreator;
 
 
 
 
-    public LotteryService(LotteryRepository lotteryRepository, UserTicketRepository userTicketRepository, ModelCreator modelCreator) {
-        this.lotteryRepository = lotteryRepository;
-        this.userTicketRepository = userTicketRepository;
-        this.modelCreator = modelCreator;
+	public LotteryService(LotteryRepository lotteryRepository, UserTicketRepository userTicketRepository, ModelCreator modelCreator) {
+		this.lotteryRepository = lotteryRepository;
+		this.userTicketRepository = userTicketRepository;
+		this.modelCreator = modelCreator;
 
-    }
+	}
 
-    @Transactional
-    public CreateLotteryResponse createLottery(LotteryDto lotteryDto){
-        Lottery lottery = this.modelCreator.mapLotteryDTOToLotteryEntity(lotteryDto);
-        Optional<Lottery>  optionalLotteryDuplicate = this.lotteryRepository.findById(lotteryDto.getTicket());
-        if(optionalLotteryDuplicate.isPresent()){
-            throw new InternalServerException(LotteryModuleConstant.MSG_CREATE_TICKET_DUPLICATE);
-        }
-        try {
-            this.lotteryRepository.save(lottery);
-        }catch (RuntimeException e){
-            throw new InternalServerException(e.getMessage());
-        }catch(Exception e){
-            throw new InternalServerException(LotteryModuleConstant.MSG_CREATE_TICKET_FAIL);
-        }
-        return this.modelCreator.mapLotteryEntityToCreateLotteryResponse(lottery);
-    }
-
-
-    public GetLotteryResponse getAllLottery(){
-        List<String> tickets = this.lotteryRepository.getAllTicket();
-
-        if(tickets.isEmpty()){
-            throw new NotFoundException(LotteryModuleConstant.MSG_VIEW_TICKETS_NOT_FOUND);
-        }
-
-        return this.modelCreator.createGetLotteryResponse(tickets);
-    }
-
-    public ViewLotteryPurchase getLotteryByUserId(String userId){
-        List<UserTicketSummary> userTicketSummaries = this.userTicketRepository.findSumPriceAmountByUserId(userId);
-
-        if(userTicketSummaries.isEmpty()){
-            throw new NotFoundException(LotteryModuleConstant.MSG_USER_TICKET_NOT_FOUND);
-        }
-
-        return this.modelCreator.createViewLotteryPurchase(userTicketSummaries);
-    }
+	@Transactional
+	public CreateLotteryResponse createLottery(LotteryDto lotteryDto){
+		Lottery lottery = this.modelCreator.mapLotteryDTOToLotteryEntity(lotteryDto);
+		Optional<Lottery>  optionalLotteryDuplicate = this.lotteryRepository.findById(lotteryDto.getTicket());
+		if(optionalLotteryDuplicate.isPresent()){
+			throw new InternalServerException(LotteryModuleConstant.MSG_CREATE_TICKET_DUPLICATE);
+		}
+		try {
+			this.lotteryRepository.save(lottery);
+		}catch (RuntimeException e){
+			throw new InternalServerException(e.getMessage());
+		}catch(Exception e){
+			throw new InternalServerException(LotteryModuleConstant.MSG_CREATE_TICKET_FAIL);
+		}
+		return this.modelCreator.mapLotteryEntityToCreateLotteryResponse(lottery);
+	}
 
 
-    @Transactional
-    public PurchaseLotteryResponse purchaseLottery(UserTicketDto userTicketDto){
-        Optional<Lottery> optionalLottery = this.lotteryRepository.findById(userTicketDto.getTicket());
-        if(optionalLottery.isEmpty()) {
-            throw new UnProcessException(LotteryModuleConstant.MSG_PURCHASE_TICKET_NOT_FOUND_IN_MASTER_TABLE);
-        }
+	public GetLotteryResponse getAllLottery(){
+		List<String> tickets = this.lotteryRepository.getAllTicket();
 
-        Lottery lottery = optionalLottery.get();
-        Integer purchaseAmount = this.getDefaultPurchaseAmount(userTicketDto.getAmount());
+		if(tickets.isEmpty()){
+			throw new NotFoundException(LotteryModuleConstant.MSG_VIEW_TICKETS_NOT_FOUND);
+		}
 
-        if(lottery.getAmount()<purchaseAmount){
-            throw new UnProcessException(LotteryModuleConstant.MSG_PURCHASE_TICKET_AMOUNT_NOT_ENOUGH);
-        }
+		return this.modelCreator.createGetLotteryResponse(tickets);
+	}
 
-        Integer newLotteryMasterAmount = lottery.getAmount()-purchaseAmount;
-        lottery.setAmount(newLotteryMasterAmount);
+	public ViewLotteryPurchase getLotteryByUserId(String userId){
+		List<UserTicketSummary> userTicketSummaries = this.userTicketRepository.findSumPriceAmountByUserId(userId);
 
-        UserTicket userTicket = this.modelCreator.mapUserTicketDTOToUserTicketEntity(userTicketDto);
-        userTicket.setAmount(purchaseAmount);
-        userTicket.setPrice(lottery.getPrice());
-        userTicket.setTotalBill(this.calculateLotteryPrice(lottery.getPrice(),userTicket.getAmount()));
+		if(userTicketSummaries.isEmpty()){
+			throw new NotFoundException(LotteryModuleConstant.MSG_USER_TICKET_NOT_FOUND);
+		}
 
-        UserTicket userTicketDb;
-        try{
-            userTicketDb = this.userTicketRepository.save(userTicket);
-            this.lotteryRepository.save(lottery);
-        }catch(Exception e){
-            throw new InternalServerException(LotteryModuleConstant.MSG_PURCHASE_FAIL);
-        }
-
-        return this.modelCreator.mapUserTicketToPurchaseLotteryResponse(userTicketDb);
-    }
+		return this.modelCreator.createViewLotteryPurchase(userTicketSummaries);
+	}
 
 
-    @Transactional
-    public SellBackLotteryResponse sellBackLottery(UserTicketDto userTicketDto){
+	@Transactional
+	public PurchaseLotteryResponse purchaseLottery(UserTicketDto userTicketDto){
+		Optional<Lottery> optionalLottery = this.lotteryRepository.findById(userTicketDto.getTicket());
+		if(optionalLottery.isEmpty()) {
+			throw new UnProcessException(LotteryModuleConstant.MSG_PURCHASE_TICKET_NOT_FOUND_IN_MASTER_TABLE);
+		}
 
-        Optional<UserTicketSummary> optionalUserTicketSummary = this.userTicketRepository.findSumPriceAmountByUserIdTicketId(userTicketDto.getUserId(),userTicketDto.getTicket());
-        if(optionalUserTicketSummary.isEmpty()){
-            throw new NotFoundException(LotteryModuleConstant.MSG_USER_TICKET_NOT_FOUND);
-        }
+		Lottery lottery = optionalLottery.get();
+		Integer purchaseAmount = this.getDefaultPurchaseAmount(userTicketDto.getAmount());
 
-        Optional<Lottery> optionalLottery = this.lotteryRepository.findById(userTicketDto.getTicket());
-        if(optionalLottery.isEmpty()){
-            throw new UnProcessException(LotteryModuleConstant.MSG_TICKET_NOT_FOUND);
-        }
-        UserTicketSummary  userTicketSummary = optionalUserTicketSummary.get();
+		if(lottery.getAmount()<purchaseAmount){
+			throw new UnProcessException(LotteryModuleConstant.MSG_PURCHASE_TICKET_AMOUNT_NOT_ENOUGH);
+		}
 
-        Lottery lottery = optionalLottery.get();
-        Integer newLotteryAmount = lottery.getAmount()+userTicketSummary.getTotalTicketAmount().intValue();
-        lottery.setAmount(newLotteryAmount);
+		Integer newLotteryMasterAmount = lottery.getAmount()-purchaseAmount;
+		lottery.setAmount(newLotteryMasterAmount);
 
-        try{
-            this.userTicketRepository.deleteUserTicketByUserIdTicket(userTicketDto.getUserId(),userTicketDto.getTicket());
-            this.lotteryRepository.save(lottery);
-        }catch (Exception e){
-            throw new InternalServerException(LotteryModuleConstant.MSG_SELL_BACK_FAIL);
-        }
+		UserTicket userTicket = this.modelCreator.mapUserTicketDTOToUserTicketEntity(userTicketDto);
+		userTicket.setAmount(purchaseAmount);
+		userTicket.setPrice(lottery.getPrice());
+		userTicket.setTotalBill(this.calculateLotteryPrice(lottery.getPrice(),userTicket.getAmount()));
 
-        return this.modelCreator.createSellBackLotteryResponse(userTicketSummary.getTicket());
-    }
+		UserTicket userTicketDb;
+		try{
+			userTicketDb = this.userTicketRepository.save(userTicket);
+			this.lotteryRepository.save(lottery);
+		}catch(Exception e){
+			throw new InternalServerException(LotteryModuleConstant.MSG_PURCHASE_FAIL);
+		}
 
-    private Double calculateLotteryPrice(Double price,int amount){
-        return price*amount;
-    }
+		return this.modelCreator.mapUserTicketToPurchaseLotteryResponse(userTicketDb);
+	}
 
-    private Integer getDefaultPurchaseAmount(Integer amount){
-        return Objects.requireNonNullElse(amount, LotteryModuleConstant.DEFAULT_PURCHASE_TICKET_AMOUNT);
-    }
+
+	@Transactional
+	public SellBackLotteryResponse sellBackLottery(UserTicketDto userTicketDto){
+
+		Optional<UserTicketSummary> optionalUserTicketSummary = this.userTicketRepository.findSumPriceAmountByUserIdTicketId(userTicketDto.getUserId(),userTicketDto.getTicket());
+		if(optionalUserTicketSummary.isEmpty()){
+			throw new NotFoundException(LotteryModuleConstant.MSG_USER_TICKET_NOT_FOUND);
+		}
+
+		Optional<Lottery> optionalLottery = this.lotteryRepository.findById(userTicketDto.getTicket());
+		if(optionalLottery.isEmpty()){
+			throw new UnProcessException(LotteryModuleConstant.MSG_TICKET_NOT_FOUND);
+		}
+		UserTicketSummary  userTicketSummary = optionalUserTicketSummary.get();
+
+		Lottery lottery = optionalLottery.get();
+		Integer newLotteryAmount = lottery.getAmount()+userTicketSummary.getTotalTicketAmount().intValue();
+		lottery.setAmount(newLotteryAmount);
+
+		try{
+			this.userTicketRepository.deleteUserTicketByUserIdTicket(userTicketDto.getUserId(),userTicketDto.getTicket());
+			this.lotteryRepository.save(lottery);
+		}catch (Exception e){
+			throw new InternalServerException(LotteryModuleConstant.MSG_SELL_BACK_FAIL);
+		}
+
+		return this.modelCreator.createSellBackLotteryResponse(userTicketSummary.getTicket());
+	}
+
+	private Double calculateLotteryPrice(Double price,int amount){
+		return price*amount;
+	}
+
+	private Integer getDefaultPurchaseAmount(Integer amount){
+		return Objects.requireNonNullElse(amount, LotteryModuleConstant.DEFAULT_PURCHASE_TICKET_AMOUNT);
+	}
 
 
 }

@@ -6,7 +6,7 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 public class UserTicketDto {
-    private String userId;
-    private String ticket;
-    private Integer amount;
+	private String userId;
+	private String ticket;
+	private Integer amount;
 }
