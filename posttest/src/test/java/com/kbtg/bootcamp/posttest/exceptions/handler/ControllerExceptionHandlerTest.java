@@ -25,7 +25,7 @@ class ControllerExceptionHandlerTest {
 	private WebRequest request;
 
 	@Test
-	public void testHandleUnProcessException() {
+	void testHandleUnProcessException() {
 		// Create a sample Exception for testing
 
 		String error_msg = "MSG_ERR";

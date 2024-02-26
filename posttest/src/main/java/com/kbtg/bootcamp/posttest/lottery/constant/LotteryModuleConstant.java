@@ -41,4 +41,15 @@ public final class LotteryModuleConstant {
 	//sell back
 	public static final String MSG_SELL_BACK_FAIL = "Failed to sell back Lottery";
 
+
+	// path URL
+	public static final String PATH_CREATE_LOTTERY = "/admin/lotteries";
+	public static  final String PATH_VIEW_ALL_LOTTERY = "/lotteries";
+	public static  final String PATH_PURCHASE_LOTTERY = "/users/{userId}/lotteries/{ticketId}";
+	public static  final String PATH_VIEW_LOTTERY_BY_USER = "/users/{userId}/lotteries";
+	public static  final String PATH_SELL_BACK_LOTTERY = "/users/{userId}/lotteries/{ticketId}";
+
+
+	//util class
+	public static final String MSG_UTIL_CLASS  = "Utility class";
 }

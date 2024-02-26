@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 
-public class ConfigurationTest {
+class ConfigurationTest {
 
 	@Test
 	void test_Active_Profile_Deploy_Must_PRODUCTION() throws IOException {

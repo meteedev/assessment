@@ -6,6 +6,7 @@ import com.kbtg.bootcamp.posttest.lottery.constant.LotteryModuleConstant;
 
 public class TicketValidator {
 
+	@SuppressWarnings("squid:S1128")
 	private TicketValidator() {
 		throw new IllegalStateException("Utility class");
 	}

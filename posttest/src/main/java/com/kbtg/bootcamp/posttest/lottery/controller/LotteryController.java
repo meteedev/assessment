@@ -1,4 +1,5 @@
 package com.kbtg.bootcamp.posttest.lottery.controller;
+import com.kbtg.bootcamp.posttest.lottery.constant.LotteryModuleConstant;
 import com.kbtg.bootcamp.posttest.lottery.model.creator.ModelCreator;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.LotteryDto;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketDto;
@@ -19,13 +20,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class LotteryController {
 
-
-
-	public static final String PATH_CREATE_LOTTERY = "/admin/lotteries";
-	public static  final String PATH_VIEW_ALL_LOTTERY = "/lotteries";
-	public static  final String PATH_PURCHASE_LOTTERY = "/users/{userId}/lotteries/{ticketId}";
-	public static  final String PATH_VIEW_LOTTERY_BY_USER = "/users/{userId}/lotteries";
-	public static  final String PATH_SELL_BACK_LOTTERY = "/users/{userId}/lotteries/{ticketId}";
 	private final LotteryService lotteryService;
 	private final ModelCreator modelCreator;
 
@@ -38,7 +32,7 @@ public class LotteryController {
 
 	@Operation(summary = "admin create lottery")
 	@PreAuthorize("hasRole('ADMIN')")
-	@PostMapping(value = LotteryController.PATH_CREATE_LOTTERY)
+	@PostMapping(value = LotteryModuleConstant.PATH_CREATE_LOTTERY)
 	public ResponseEntity<CreateLotteryResponse> createLottery(
 			@RequestBody @Valid CreateRequest createRequest
 	) {
@@ -50,7 +44,7 @@ public class LotteryController {
 
 
 	@Operation(summary = "get lottery")
-	@GetMapping(value = LotteryController.PATH_VIEW_ALL_LOTTERY)
+	@GetMapping(value = LotteryModuleConstant.PATH_VIEW_ALL_LOTTERY)
 	public ResponseEntity<GetLotteryResponse> getAllLottery() {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(this.lotteryService.getAllLottery());
@@ -58,7 +52,7 @@ public class LotteryController {
 
 
 	@Operation(summary = "buy lottery")
-	@PostMapping(value = LotteryController.PATH_PURCHASE_LOTTERY)
+	@PostMapping(value = LotteryModuleConstant.PATH_PURCHASE_LOTTERY)
 	public ResponseEntity<PurchaseLotteryResponse> purchaseLottery(
 			@PathVariable(name = "userId") String userId,
 			@PathVariable(name = "ticketId") String ticketId
@@ -73,7 +67,7 @@ public class LotteryController {
 	}
 
 	@Operation(summary = "view lottery was purchased by user")
-	@GetMapping(value = LotteryController.PATH_VIEW_LOTTERY_BY_USER)
+	@GetMapping(value = LotteryModuleConstant.PATH_VIEW_LOTTERY_BY_USER)
 	public ResponseEntity<ViewLotteryPurchase> viewLotteryPurchaseByUser(
 			@PathVariable(name = "userId") String userId
 	) {
@@ -83,7 +77,7 @@ public class LotteryController {
 	}
 
 	@Operation(summary = "refund lottery")
-	@DeleteMapping(value = LotteryController.PATH_SELL_BACK_LOTTERY)
+	@DeleteMapping(value = LotteryModuleConstant.PATH_SELL_BACK_LOTTERY)
 	public ResponseEntity<SellBackLotteryResponse> sellBackLottery(
 			@PathVariable(name = "userId") String userId,
 			@PathVariable(name = "ticketId") String ticketId

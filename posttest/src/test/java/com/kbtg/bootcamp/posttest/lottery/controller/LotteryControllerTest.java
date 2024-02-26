@@ -61,7 +61,7 @@ class LotteryControllerTest {
 		when(lotteryService.createLottery(lotteryDto))
 				.thenReturn(new CreateLotteryResponse(ticketId));
 
-		this.mockMvc.perform(post(LotteryController.PATH_CREATE_LOTTERY)
+		this.mockMvc.perform(post(LotteryModuleConstant.PATH_CREATE_LOTTERY)
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(this.objectMapper.writeValueAsString(createRequest)))
 				.andDo(print())
@@ -87,7 +87,7 @@ class LotteryControllerTest {
 		when(lotteryService.createLottery(lotteryDto))
 				.thenReturn(new CreateLotteryResponse(ticketId));
 
-		this.mockMvc.perform(post(LotteryController.PATH_CREATE_LOTTERY)
+		this.mockMvc.perform(post(LotteryModuleConstant.PATH_CREATE_LOTTERY)
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(this.objectMapper.writeValueAsString(createRequest)))
 				.andDo(print())
@@ -104,7 +104,7 @@ class LotteryControllerTest {
 
 		when(lotteryService.getAllLottery()).thenReturn(getLotteryResponse);
 
-		this.mockMvc.perform(get(LotteryController.PATH_VIEW_ALL_LOTTERY))
+		this.mockMvc.perform(get(LotteryModuleConstant.PATH_VIEW_ALL_LOTTERY))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -117,7 +117,7 @@ class LotteryControllerTest {
 	void when_GetAllLottery_Not_found_Then_Return_status_NOTFOUND_and_errorMsg() throws Exception {
 
 		when(lotteryService.getAllLottery()).thenThrow(new NotFoundException(LotteryModuleConstant.MSG_VIEW_TICKETS_NOT_FOUND));
-		this.mockMvc.perform(get(LotteryController.PATH_VIEW_ALL_LOTTERY))
+		this.mockMvc.perform(get(LotteryModuleConstant.PATH_VIEW_ALL_LOTTERY))
 				.andDo(print())
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -136,7 +136,7 @@ class LotteryControllerTest {
 
 		when(lotteryService.getLotteryByUserId(userId)).thenReturn(viewLotteryPurchase);
 
-		this.mockMvc.perform(get(LotteryController.PATH_VIEW_LOTTERY_BY_USER,userId))
+		this.mockMvc.perform(get(LotteryModuleConstant.PATH_VIEW_LOTTERY_BY_USER,userId))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -153,7 +153,7 @@ class LotteryControllerTest {
 
 		when(lotteryService.getLotteryByUserId(userId)).thenThrow(new NotFoundException(LotteryModuleConstant.MSG_USER_TICKET_NOT_FOUND));
 
-		this.mockMvc.perform(get(LotteryController.PATH_VIEW_LOTTERY_BY_USER,userId))
+		this.mockMvc.perform(get(LotteryModuleConstant.PATH_VIEW_LOTTERY_BY_USER,userId))
 				.andDo(print())
 				.andExpect(status().isNotFound())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -166,7 +166,7 @@ class LotteryControllerTest {
 
 		String userId = "1234567";
 
-		this.mockMvc.perform(get(LotteryController.PATH_VIEW_LOTTERY_BY_USER,userId))
+		this.mockMvc.perform(get(LotteryModuleConstant.PATH_VIEW_LOTTERY_BY_USER,userId))
 				.andDo(print())
 				.andExpect(status().isBadRequest())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -182,7 +182,7 @@ class LotteryControllerTest {
 
 		String userId = "U011111111";
 
-		this.mockMvc.perform(get(LotteryController.PATH_VIEW_LOTTERY_BY_USER,userId))
+		this.mockMvc.perform(get(LotteryModuleConstant.PATH_VIEW_LOTTERY_BY_USER,userId))
 				.andDo(print())
 				.andExpect(status().isBadRequest())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -198,7 +198,7 @@ class LotteryControllerTest {
 		String userId = "1234567";
 		String ticketId = "123";
 
-		this.mockMvc.perform(post(LotteryController.PATH_PURCHASE_LOTTERY,userId,ticketId))
+		this.mockMvc.perform(post(LotteryModuleConstant.PATH_PURCHASE_LOTTERY,userId,ticketId))
 				.andDo(print())
 				.andExpect(status().isBadRequest())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -214,7 +214,7 @@ class LotteryControllerTest {
 		String userId = "1234567890";
 		String ticketId = "123";
 
-		this.mockMvc.perform(post(LotteryController.PATH_PURCHASE_LOTTERY,userId,ticketId))
+		this.mockMvc.perform(post(LotteryModuleConstant.PATH_PURCHASE_LOTTERY,userId,ticketId))
 				.andDo(print())
 				.andExpect(status().isBadRequest())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -233,7 +233,7 @@ class LotteryControllerTest {
 		PurchaseLotteryResponse purchaseLotteryResponse = new PurchaseLotteryResponse("1");
 
 		when(lotteryService.purchaseLottery(userTicketDto)).thenReturn(purchaseLotteryResponse);
-		this.mockMvc.perform(post(LotteryController.PATH_PURCHASE_LOTTERY,userId,ticketId))
+		this.mockMvc.perform(post(LotteryModuleConstant.PATH_PURCHASE_LOTTERY,userId,ticketId))
 				.andDo(print())
 				.andExpect(status().isCreated())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -248,7 +248,7 @@ class LotteryControllerTest {
 		String userId = "1234567";
 		String ticketId = "123";
 
-		this.mockMvc.perform(delete(LotteryController.PATH_SELL_BACK_LOTTERY,userId,ticketId))
+		this.mockMvc.perform(delete(LotteryModuleConstant.PATH_SELL_BACK_LOTTERY,userId,ticketId))
 				.andDo(print())
 				.andExpect(status().isBadRequest())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -264,7 +264,7 @@ class LotteryControllerTest {
 		String userId = "1234567890";
 		String ticketId = "123";
 
-		this.mockMvc.perform(delete(LotteryController.PATH_SELL_BACK_LOTTERY,userId,ticketId))
+		this.mockMvc.perform(delete(LotteryModuleConstant.PATH_SELL_BACK_LOTTERY,userId,ticketId))
 				.andDo(print())
 				.andExpect(status().isBadRequest())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -284,7 +284,7 @@ class LotteryControllerTest {
 		SellBackLotteryResponse sellBackLotteryResponse = new SellBackLotteryResponse(ticketId);
 
 		when(lotteryService.sellBackLottery(userTicketDto)).thenReturn(sellBackLotteryResponse);
-		this.mockMvc.perform(delete(LotteryController.PATH_SELL_BACK_LOTTERY,userId,ticketId))
+		this.mockMvc.perform(delete(LotteryModuleConstant.PATH_SELL_BACK_LOTTERY,userId,ticketId))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
