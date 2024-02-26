@@ -38,7 +38,7 @@ public class SpringSecurityConfig {
 		return http
 				.csrf(AbstractHttpConfigurer::disable)
 				.cors(AbstractHttpConfigurer::disable)
-				.authorizeHttpRequests((requests) -> requests
+				.authorizeHttpRequests(requests -> requests
 								.requestMatchers(AUTH_URL_WHITELIST).permitAll()
 								.requestMatchers(ADMIN_URL_LIST).hasAnyRole("ADMIN")
 								.anyRequest()

@@ -38,7 +38,7 @@ public class LotteryController {
 
 	@Operation(summary = "admin create lottery")
 	@PreAuthorize("hasRole('ADMIN')")
-	@RequestMapping(value = LotteryController.PATH_CREATE_LOTTERY, method = RequestMethod.POST)
+	@PostMapping(value = LotteryController.PATH_CREATE_LOTTERY)
 	public ResponseEntity<CreateLotteryResponse> createLottery(
 			@RequestBody @Valid CreateRequest createRequest
 	) {
@@ -50,7 +50,7 @@ public class LotteryController {
 
 
 	@Operation(summary = "get lottery")
-	@RequestMapping(value = LotteryController.PATH_VIEW_ALL_LOTTERY, method = RequestMethod.GET)
+	@GetMapping(value = LotteryController.PATH_VIEW_ALL_LOTTERY)
 	public ResponseEntity<GetLotteryResponse> getAllLottery() {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(this.lotteryService.getAllLottery());
@@ -58,7 +58,7 @@ public class LotteryController {
 
 
 	@Operation(summary = "buy lottery")
-	@RequestMapping(value = LotteryController.PATH_PURCHASE_LOTTERY, method = RequestMethod.POST)
+	@PostMapping(value = LotteryController.PATH_PURCHASE_LOTTERY)
 	public ResponseEntity<PurchaseLotteryResponse> purchaseLottery(
 			@PathVariable(name = "userId") String userId,
 			@PathVariable(name = "ticketId") String ticketId
@@ -73,7 +73,7 @@ public class LotteryController {
 	}
 
 	@Operation(summary = "view lottery was purchased by user")
-	@RequestMapping(value = LotteryController.PATH_VIEW_LOTTERY_BY_USER, method = RequestMethod.GET)
+	@GetMapping(value = LotteryController.PATH_VIEW_LOTTERY_BY_USER)
 	public ResponseEntity<ViewLotteryPurchase> viewLotteryPurchaseByUser(
 			@PathVariable(name = "userId") String userId
 	) {
@@ -83,7 +83,7 @@ public class LotteryController {
 	}
 
 	@Operation(summary = "refund lottery")
-	@RequestMapping(value = LotteryController.PATH_SELL_BACK_LOTTERY, method = RequestMethod.DELETE)
+	@DeleteMapping(value = LotteryController.PATH_SELL_BACK_LOTTERY)
 	public ResponseEntity<SellBackLotteryResponse> sellBackLottery(
 			@PathVariable(name = "userId") String userId,
 			@PathVariable(name = "ticketId") String ticketId

@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Import(SpringSecurityConfig.class)
 @WebMvcTest(LotteryController.class)
-public class LotteryControllerTest {
+class LotteryControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -96,7 +96,7 @@ public class LotteryControllerTest {
 
 	@Test
 	@DisplayName("View all lotteries")
-	public void when_GetAllLottery_Then_Return_status_OK_and_TicketsList() throws Exception {
+	void when_GetAllLottery_Then_Return_status_OK_and_TicketsList() throws Exception {
 		List<String> ticketList = new ArrayList<>();
 		ticketList.add("123456");
 		ticketList.add("111222");
