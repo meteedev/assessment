@@ -156,7 +156,7 @@ class LotteryServiceTest {
 
 	@Test
 	@DisplayName("Purchase lottery")
-	public void when_Purchase_Lottery_Return_PurchaseLotteryResponse() {
+	void when_Purchase_Lottery_Return_PurchaseLotteryResponse() {
 		// Create a sample UserTicketDto
 		String ticket = "123456";
 		Integer amount = 1;

@@ -3,6 +3,7 @@ import com.kbtg.bootcamp.posttest.lottery.model.creator.ModelCreator;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.LotteryDto;
 import com.kbtg.bootcamp.posttest.lottery.model.dto.UserTicketDto;
 import com.kbtg.bootcamp.posttest.lottery.model.request.CreateRequest;
+import com.kbtg.bootcamp.posttest.lottery.model.response.*;
 import com.kbtg.bootcamp.posttest.lottery.service.LotteryService;
 import com.kbtg.bootcamp.posttest.lottery.util.TicketValidator;
 import com.kbtg.bootcamp.posttest.lottery.util.UserValidator;
@@ -38,7 +39,7 @@ public class LotteryController {
 	@Operation(summary = "admin create lottery")
 	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = LotteryController.PATH_CREATE_LOTTERY, method = RequestMethod.POST)
-	public ResponseEntity createLottery(
+	public ResponseEntity<CreateLotteryResponse> createLottery(
 			@RequestBody @Valid CreateRequest createRequest
 	) {
 
@@ -50,7 +51,7 @@ public class LotteryController {
 
 	@Operation(summary = "get lottery")
 	@RequestMapping(value = LotteryController.PATH_VIEW_ALL_LOTTERY, method = RequestMethod.GET)
-	public ResponseEntity getAllLottery() {
+	public ResponseEntity<GetLotteryResponse> getAllLottery() {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(this.lotteryService.getAllLottery());
 	}
@@ -58,7 +59,7 @@ public class LotteryController {
 
 	@Operation(summary = "buy lottery")
 	@RequestMapping(value = LotteryController.PATH_PURCHASE_LOTTERY, method = RequestMethod.POST)
-	public ResponseEntity purchaseLottery(
+	public ResponseEntity<PurchaseLotteryResponse> purchaseLottery(
 			@PathVariable(name = "userId") String userId,
 			@PathVariable(name = "ticketId") String ticketId
 	) {
@@ -73,7 +74,7 @@ public class LotteryController {
 
 	@Operation(summary = "view lottery was purchased by user")
 	@RequestMapping(value = LotteryController.PATH_VIEW_LOTTERY_BY_USER, method = RequestMethod.GET)
-	public ResponseEntity viewLotteryPurchaseByUser(
+	public ResponseEntity<ViewLotteryPurchase> viewLotteryPurchaseByUser(
 			@PathVariable(name = "userId") String userId
 	) {
 		UserValidator.validateUserIdFormat(userId);
@@ -83,7 +84,7 @@ public class LotteryController {
 
 	@Operation(summary = "refund lottery")
 	@RequestMapping(value = LotteryController.PATH_SELL_BACK_LOTTERY, method = RequestMethod.DELETE)
-	public ResponseEntity sellBackLottery(
+	public ResponseEntity<SellBackLotteryResponse> sellBackLottery(
 			@PathVariable(name = "userId") String userId,
 			@PathVariable(name = "ticketId") String ticketId
 	) {
