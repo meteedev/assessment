@@ -48,7 +48,7 @@ class LotteryServiceTest {
 
 	@Test
 	@DisplayName("Create lottery")
-	public void when_createLottery_Return_CreateLotteryResponse(){
+	void when_createLottery_Return_CreateLotteryResponse(){
 		// Create a sample LotteryDto
 		LotteryDto lotteryDto = new LotteryDto("123456",10,80.0);
 		// Create a sample Lottery
@@ -78,7 +78,7 @@ class LotteryServiceTest {
 
 	@Test
 	@DisplayName("Create lottery ticket duplicated")
-	public void when_createLottery_Duplicated_Throws_InternalServerException(){
+	void when_createLottery_Duplicated_Throws_InternalServerException(){
 		// Create a sample LotteryDto
 		LotteryDto lotteryDto = new LotteryDto("123456",10,80.0);
 		// Create a sample Lottery
@@ -96,7 +96,7 @@ class LotteryServiceTest {
 
 	@Test
 	@DisplayName("Create lottery ticket have incident RuntimeException")
-	public void when_createLottery_have_RuntimeException_Throws_InternalServerException(){
+	void when_createLottery_have_RuntimeException_Throws_InternalServerException(){
 		LotteryDto lotteryDto = new LotteryDto("123456",10,80.0);
 		// Create a sample Lottery
 		Lottery lottery = new Lottery();
@@ -120,7 +120,7 @@ class LotteryServiceTest {
 
 	@Test
 	@DisplayName("Get All lotteries ")
-	public void when_getAllLottery_Return_GetLotteryResponse() {
+	void when_getAllLottery_Return_GetLotteryResponse() {
 		// Create a sample list of tickets
 		List<String> sampleTickets = Arrays.asList("111111", "222222", "333333");
 
@@ -141,7 +141,7 @@ class LotteryServiceTest {
 
 	@Test
 	@DisplayName("Get All lotteries not found ticket ")
-	public void when_getAllLottery_NotFound_Throws_NotFoundException() {
+	void when_getAllLottery_NotFound_Throws_NotFoundException() {
 		// Mock the behavior of lotteryRepository to return an empty list
 		when(lotteryRepository.getAllTicket()).thenReturn(Collections.emptyList());
 
@@ -199,7 +199,7 @@ class LotteryServiceTest {
 
 	@Test
 	@DisplayName("Purchase lottery that master table not found")
-	public void when_Purchase_Lottery_Lottery_NotFound_in_table_Throws_UnProcessException() {
+	void when_Purchase_Lottery_Lottery_NotFound_in_table_Throws_UnProcessException() {
 		// Create a sample UserTicketDto
 
 		String ticket = "123456";
@@ -227,7 +227,7 @@ class LotteryServiceTest {
 
 	@Test
 	@DisplayName("View Purchase lottery")
-	public void when_View_Purchase_Lottery_Return_ViewLotteryPurchase() {
+	void when_View_Purchase_Lottery_Return_ViewLotteryPurchase() {
 		// Create a sample userId
 		String userId = "1234567890";
 
@@ -266,7 +266,7 @@ class LotteryServiceTest {
 
 	@Test
 	@DisplayName("View Purchase lottery not found transaction")
-	public void when_View_Purchase_Lottery_NotFound_transaction_Throws_NotFoundException() {
+	void when_View_Purchase_Lottery_NotFound_transaction_Throws_NotFoundException() {
 		// Create a sample userId
 		String userId = "1234567890";
 
@@ -286,7 +286,7 @@ class LotteryServiceTest {
 
 	@Test
 	@DisplayName("Sell back lottery")
-	public void when_Sell_back_Lottery_Return_SellBackLotteryResponse() {
+	void when_Sell_back_Lottery_Return_SellBackLotteryResponse() {
 
 		// Create a sample UserTicketDto
 		String ticket = "123456";
@@ -339,7 +339,7 @@ class LotteryServiceTest {
 
 	@Test
 	@DisplayName("Sell back lottery not found transaction")
-	public void when_Sell_back_Lottery_NotFound_Transaction_Throws_NotFoundException() {
+	void when_Sell_back_Lottery_NotFound_Transaction_Throws_NotFoundException() {
 		// Create a sample UserTicketDto
 		UserTicketDto userTicketDto = new UserTicketDto();
 
@@ -358,7 +358,7 @@ class LotteryServiceTest {
 
 	@Test
 	@DisplayName("Sell back lottery not found transaction")
-	public void when_Sell_back_Lottery_NotFound_ticket_in_lottery_table_Throws_NotFoundException() {
+	void when_Sell_back_Lottery_NotFound_ticket_in_lottery_table_Throws_NotFoundException() {
 
 		UserTicketSummary userTicketSummary = new UserTicketSummary("123456","1111111111",2L,160.0);
 

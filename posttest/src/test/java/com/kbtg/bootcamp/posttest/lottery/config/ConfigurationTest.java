@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ConfigurationTest {
 
 	@Test
-	public void test_Active_Profile_Deploy_Must_PRODUCTION() throws IOException {
+	void test_Active_Profile_Deploy_Must_PRODUCTION() throws IOException {
 		// Load the application.properties file
 		ClassPathResource resource = new ClassPathResource("application.properties");
 		Properties properties = PropertiesLoaderUtils.loadProperties(resource);

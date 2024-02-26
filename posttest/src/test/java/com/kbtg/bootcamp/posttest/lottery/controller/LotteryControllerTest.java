@@ -48,7 +48,7 @@ public class LotteryControllerTest {
 	@Test
 	@DisplayName("Admin role create lottery")
 	@WithMockUser(username = "admin",password = "password",roles = "ADMIN")
-	public void given_AdminRoleUser_When_CreateLottery_Then_Return_status_OK_and_Ticket() throws Exception {
+	void given_AdminRoleUser_When_CreateLottery_Then_Return_status_OK_and_Ticket() throws Exception {
 
 		String ticketId = "123456";
 		Double price = 80.0;
@@ -74,7 +74,7 @@ public class LotteryControllerTest {
 	@Test
 	@DisplayName("User role create lottery")
 	@WithMockUser(username = "admin",password = "password",roles = "USER")
-	public void given_UserRoleUser_When_CreateLottery_Then_Return_status_UNAUTHORIZED() throws Exception {
+	void given_UserRoleUser_When_CreateLottery_Then_Return_status_UNAUTHORIZED() throws Exception {
 
 		String ticketId = "123456";
 		Double price = 80.0;
@@ -114,7 +114,7 @@ public class LotteryControllerTest {
 
 	@Test
 	@DisplayName("View lotteries and not found lotteries")
-	public void when_GetAllLottery_Not_found_Then_Return_status_NOTFOUND_and_errorMsg() throws Exception {
+	void when_GetAllLottery_Not_found_Then_Return_status_NOTFOUND_and_errorMsg() throws Exception {
 
 		when(lotteryService.getAllLottery()).thenThrow(new NotFoundException(LotteryModuleConstant.MSG_VIEW_TICKETS_NOT_FOUND));
 		this.mockMvc.perform(get(LotteryController.PATH_VIEW_ALL_LOTTERY))
@@ -126,7 +126,7 @@ public class LotteryControllerTest {
 
 	@Test
 	@DisplayName("User view purchased lottery transactions lotteries")
-	public void when_UserViewPurchasedLottery_Found_Then_Return_status_OK_and_ViewLotteryPurchase() throws Exception {
+	void when_UserViewPurchasedLottery_Found_Then_Return_status_OK_and_ViewLotteryPurchase() throws Exception {
 
 		String userId = "1234567890";
 		List<String> ticketList = new ArrayList<>();
@@ -148,7 +148,7 @@ public class LotteryControllerTest {
 
 	@Test
 	@DisplayName("User view purchased lottery transactions lotteries not found")
-	public void when_UserViewPurchasedLottery_NotFound_Then_Return_status_NOTFOUND_and_errorMsg()throws Exception {
+	void when_UserViewPurchasedLottery_NotFound_Then_Return_status_NOTFOUND_and_errorMsg()throws Exception {
 		String userId = "1234567890";
 
 		when(lotteryService.getLotteryByUserId(userId)).thenThrow(new NotFoundException(LotteryModuleConstant.MSG_USER_TICKET_NOT_FOUND));
@@ -162,7 +162,7 @@ public class LotteryControllerTest {
 
 	@Test
 	@DisplayName("View purchased lottery transactions and input length not equal 10 user_id format")
-	public void when_InputInvalidUserId_Length_Format_ViewPurchasedLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
+	void when_InputInvalidUserId_Length_Format_ViewPurchasedLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
 
 		String userId = "1234567";
 
@@ -178,7 +178,7 @@ public class LotteryControllerTest {
 
 	@Test
 	@DisplayName("View purchased lottery transactions and input invalid user_id format")
-	public void when_InputInvalidUserId_not_digit_Format_ViewPurchasedLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
+	void when_InputInvalidUserId_not_digit_Format_ViewPurchasedLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
 
 		String userId = "U011111111";
 
@@ -193,7 +193,7 @@ public class LotteryControllerTest {
 
 	@Test
 	@DisplayName("Purchase lottery input invalid user_id format")
-	public void when_InputInvalidUserIdFormat_PurchasedLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
+	void when_InputInvalidUserIdFormat_PurchasedLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
 
 		String userId = "1234567";
 		String ticketId = "123";
@@ -209,7 +209,7 @@ public class LotteryControllerTest {
 
 	@Test
 	@DisplayName("Purchase lottery input invalid ticket format")
-	public void when_PurchasedLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
+	void when_PurchasedLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
 
 		String userId = "1234567890";
 		String ticketId = "123";
@@ -225,7 +225,7 @@ public class LotteryControllerTest {
 
 	@Test
 	@DisplayName("Purchase lottery")
-	public void when_InputInvalidTicketFormat_PurchasedLottery_Then_Return_status_CREATED_and_TransactionsId() throws Exception {
+	void when_InputInvalidTicketFormat_PurchasedLottery_Then_Return_status_CREATED_and_TransactionsId() throws Exception {
 		String userId = "1234567890";
 		String ticketId = "123456";
 
@@ -243,7 +243,7 @@ public class LotteryControllerTest {
 
 	@Test
 	@DisplayName("Sell back lottery input invalid user_id format")
-	public void when_InputInvalidUserIdFormat_SellBackLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
+	void when_InputInvalidUserIdFormat_SellBackLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
 
 		String userId = "1234567";
 		String ticketId = "123";
@@ -259,7 +259,7 @@ public class LotteryControllerTest {
 
 	@Test
 	@DisplayName("Sell back lottery input invalid ticket format")
-	public void when_InputInvalidTicketFormat_SellBackLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
+	void when_InputInvalidTicketFormat_SellBackLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
 
 		String userId = "1234567890";
 		String ticketId = "123";
@@ -275,7 +275,7 @@ public class LotteryControllerTest {
 
 	@Test
 	@DisplayName("Sell back lottery ")
-	public void when_SellBackLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
+	void when_SellBackLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
 
 		String userId = "1234567890";
 		String ticketId = "123456";
