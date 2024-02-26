@@ -27,10 +27,12 @@ public class CreateRequest {
 
 	@NotNull
 	@Positive
+	@Pattern(regexp = "\\d+", message = LotteryModuleConstant.MSG_DIGIT_ONLY)
 	private Double price;
 
 	@NotNull
 	@Positive
+	@Pattern(regexp = "\\d+", message = LotteryModuleConstant.MSG_DIGIT_ONLY)
 	private Integer amount;
 
 

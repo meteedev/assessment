@@ -7,9 +7,15 @@ import com.kbtg.bootcamp.posttest.lottery.constant.LotteryModuleConstant;
 public class TicketValidator {
 
 	public static void validateTicketIdFormat(String ticketId){
-		if (ticketId == null || ticketId.trim().length() != LotteryModuleConstant.TICKET_LENGTH) {
+		if (ticketId == null
+				|| ticketId.trim().length() != LotteryModuleConstant.TICKET_LENGTH
+				|| !(CommonValidator.isOnlyDigits(ticketId))) {
 			throw new AppValidateException(LotteryModuleConstant.MSG_INVALID_TICKET_FORMAT);
 		}
 	}
+
+
+
+
 
 }

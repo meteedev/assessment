@@ -14,8 +14,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
+
 @RestController
 public class LotteryController {
+
+
 
 	public static final String PATH_CREATE_LOTTERY = "/admin/lotteries";
 	public static  final String PATH_VIEW_ALL_LOTTERY = "/lotteries";
