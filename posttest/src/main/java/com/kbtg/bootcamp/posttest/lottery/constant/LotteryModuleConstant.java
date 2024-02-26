@@ -3,7 +3,7 @@ package com.kbtg.bootcamp.posttest.lottery.constant;
 public final class LotteryModuleConstant {
 
 	private LotteryModuleConstant() {
-		throw new IllegalStateException("Utility class");
+		throw new IllegalStateException(LotteryModuleConstant.MSG_UTIL_CLASS);
 	}
 
 	//common
