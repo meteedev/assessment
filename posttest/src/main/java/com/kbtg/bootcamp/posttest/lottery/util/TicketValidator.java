@@ -6,7 +6,7 @@ import com.kbtg.bootcamp.posttest.lottery.constant.LotteryModuleConstant;
 
 public class TicketValidator {
 
-	private TicketValidator() {
+	TicketValidator() {
 		throw new IllegalStateException((LotteryModuleConstant.MSG_UTIL_CLASS));
 	}
 
