@@ -5,9 +5,8 @@ import com.kbtg.bootcamp.posttest.lottery.constant.LotteryModuleConstant;
 
 
 public class UserValidator {
-	@SuppressWarnings("squid:S1128")
 	private UserValidator() {
-		throw new IllegalStateException("Utility class");
+		throw new IllegalStateException((LotteryModuleConstant.MSG_UTIL_CLASS));
 	}
 	public static void validateUserIdFormat(String userId){
 		if (userId == null
