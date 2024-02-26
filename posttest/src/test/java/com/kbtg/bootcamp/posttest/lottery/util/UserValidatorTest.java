@@ -7,6 +7,7 @@ import static com.kbtg.bootcamp.posttest.lottery.constant.LotteryModuleConstant.
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserValidatorTest {
+	@Test
 	void when_input_userId_null_Throws_AppValidateException(){
 		try{
 			UserValidator.validateUserIdFormat(null);

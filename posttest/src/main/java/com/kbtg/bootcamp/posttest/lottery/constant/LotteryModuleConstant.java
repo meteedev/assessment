@@ -1,6 +1,11 @@
 package com.kbtg.bootcamp.posttest.lottery.constant;
 
 public final class LotteryModuleConstant {
+
+	private LotteryModuleConstant() {
+		throw new IllegalStateException("Utility class");
+	}
+
 	//common
 	public static final String  MSG_DIGIT_ONLY = "Input digit only";
 	public static final String  MSG_TICKET_NOT_FOUND = "Ticket not found in lottery table";
