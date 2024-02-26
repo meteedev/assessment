@@ -1,10 +1,7 @@
 package com.kbtg.bootcamp.posttest.lottery.model.request;
 
 import com.kbtg.bootcamp.posttest.lottery.constant.LotteryModuleConstant;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,13 +23,13 @@ public class CreateRequest {
 	private String ticket;
 
 	@NotNull
+	@Digits(integer = Integer.MAX_VALUE, fraction = Integer.MAX_VALUE, message = LotteryModuleConstant.MSG_DIGIT_ONLY)
 	@Positive
-	@Pattern(regexp = "\\d+", message = LotteryModuleConstant.MSG_DIGIT_ONLY)
 	private Double price;
 
 	@NotNull
+	@Digits(integer = Integer.MAX_VALUE, fraction = 0, message = LotteryModuleConstant.MSG_DIGIT_ONLY)
 	@Positive
-	@Pattern(regexp = "\\d+", message = LotteryModuleConstant.MSG_DIGIT_ONLY)
 	private Integer amount;
 
 

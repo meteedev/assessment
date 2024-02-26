@@ -80,7 +80,7 @@ public class LotteryService {
 	public PurchaseLotteryResponse purchaseLottery(UserTicketDto userTicketDto){
 		Optional<Lottery> optionalLottery = this.lotteryRepository.findById(userTicketDto.getTicket());
 		if(optionalLottery.isEmpty()) {
-			throw new UnProcessException(LotteryModuleConstant.MSG_PURCHASE_TICKET_NOT_FOUND_IN_MASTER_TABLE);
+			throw new UnProcessException(LotteryModuleConstant.MSG_TICKET_NOT_FOUND);
 		}
 
 		Lottery lottery = optionalLottery.get();
@@ -120,7 +120,7 @@ public class LotteryService {
 
 		Optional<Lottery> optionalLottery = this.lotteryRepository.findById(userTicketDto.getTicket());
 		if(optionalLottery.isEmpty()){
-			throw new UnProcessException(LotteryModuleConstant.MSG_TICKET_NOT_FOUND);
+			throw new UnProcessException(LotteryModuleConstant.MSG_PURCHASE_TICKET_NOT_FOUND_IN_MASTER_TABLE);
 		}
 		UserTicketSummary  userTicketSummary = optionalUserTicketSummary.get();
 

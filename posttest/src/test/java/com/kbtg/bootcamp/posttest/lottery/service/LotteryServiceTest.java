@@ -218,7 +218,7 @@ class LotteryServiceTest {
 		var thrownException = assertThrows(UnProcessException.class, () -> lotteryService.purchaseLottery(userTicketDto));
 
 		// Optionally, you can assert further details about the exception if needed
-		assertEquals(LotteryModuleConstant.MSG_PURCHASE_TICKET_NOT_FOUND_IN_MASTER_TABLE, thrownException.getMessage());
+		assertEquals(LotteryModuleConstant.MSG_TICKET_NOT_FOUND, thrownException.getMessage());
 		// Add more assertions based on your specific requirements
 	}
 
@@ -358,7 +358,7 @@ class LotteryServiceTest {
 
 	@Test
 	@DisplayName("Sell back lottery not found transaction")
-	public void when_Sell_back_Lottery_NotFound_Lottery_in_table_Throws_NotFoundException() {
+	public void when_Sell_back_Lottery_NotFound_ticket_in_lottery_table_Throws_NotFoundException() {
 
 		UserTicketSummary userTicketSummary = new UserTicketSummary("123456","1111111111",2L,160.0);
 
