@@ -114,7 +114,7 @@ public class LotteryControllerTest {
 
 	@Test
 	@DisplayName("View lotteries and not found lotteries")
-	public void when_GetAllLottery_Notfound_Then_Return_status_NOTFOUND_and_errorMsg() throws Exception {
+	public void when_GetAllLottery_Not_found_Then_Return_status_NOTFOUND_and_errorMsg() throws Exception {
 
 		when(lotteryService.getAllLottery()).thenThrow(new NotFoundException(LotteryModuleConstant.MSG_VIEW_TICKETS_NOT_FOUND));
 		this.mockMvc.perform(get(LotteryController.PATH_VIEW_ALL_LOTTERY))
@@ -161,10 +161,26 @@ public class LotteryControllerTest {
 	}
 
 	@Test
-	@DisplayName("View purchased lottery transactions and input invalid user_id format")
-	public void when_InputInvalidUserIdFormat_ViewPurchasedLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
+	@DisplayName("View purchased lottery transactions and input length not equal 10 user_id format")
+	public void when_InputInvalidUserId_Length_Format_ViewPurchasedLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
 
 		String userId = "1234567";
+
+		this.mockMvc.perform(get(LotteryController.PATH_VIEW_LOTTERY_BY_USER,userId))
+				.andDo(print())
+				.andExpect(status().isBadRequest())
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.message").value(LotteryModuleConstant.MSG_INVALID_USER_FORMAT));
+
+	}
+
+
+
+	@Test
+	@DisplayName("View purchased lottery transactions and input invalid user_id format")
+	public void when_InputInvalidUserId_not_digit_Format_ViewPurchasedLottery_Then_Return_status_BADREQUEST_and_errorMsg() throws Exception {
+
+		String userId = "U011111111";
 
 		this.mockMvc.perform(get(LotteryController.PATH_VIEW_LOTTERY_BY_USER,userId))
 				.andDo(print())

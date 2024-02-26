@@ -26,7 +26,7 @@ public interface LotteryModuleConstant {
 
 
 
-	//buy and  lottery
+	//buy lottery
 	Integer DEFAULT_PURCHASE_TICKET_AMOUNT = 1;
 	String MSG_PURCHASE_TICKET_AMOUNT_NOT_ENOUGH = "Lottery amount not enough for buy";
 
