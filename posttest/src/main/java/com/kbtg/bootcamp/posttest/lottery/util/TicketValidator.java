@@ -6,6 +6,10 @@ import com.kbtg.bootcamp.posttest.lottery.constant.LotteryModuleConstant;
 
 public class TicketValidator {
 
+	private TicketValidator() {
+		throw new IllegalStateException("Utility class");
+	}
+
 	public static void validateTicketIdFormat(String ticketId){
 		if (ticketId == null
 				|| ticketId.trim().length() != LotteryModuleConstant.TICKET_LENGTH
